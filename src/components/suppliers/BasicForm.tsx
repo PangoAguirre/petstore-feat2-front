@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { InputField } from "../input/InputField";
+import { InputField, InputFieldProps } from "../input/InputField";
 import {
   useForm,
   RegisterOptions,
@@ -7,17 +7,14 @@ import {
   SubmitHandler,
 } from "react-hook-form";
 
-export interface FieldConfig {
-  name: string;
-  label: string;
-  type?: string;
-  placeholder?: string;
+export interface FieldConfig extends InputFieldProps {
   rules?: RegisterOptions<FieldValues>;
 }
 
 interface StepCompProps {
   fields: FieldConfig[];
   onSubmit: SubmitHandler<FieldValues>;
+  btnText?: string;
 }
 
 export function BasicForm(props: StepCompProps) {
@@ -28,19 +25,18 @@ export function BasicForm(props: StepCompProps) {
       onSubmit={handleSubmit(props.onSubmit)}
       className="flex flex-col gap-10 grow py-8"
     >
-      {props.fields.map((field, idx) => {
+      {props.fields.map(({ rules, ...fProps }, idx) => {
         return (
           <InputField
-            {...register(field.name, field.rules)}
+            {...register(fProps.id, rules)}
+            {...fProps}
+            required={rules?.required === true}
             key={idx}
-            id={field.name}
-            label={field.label}
-            placeholder={field.placeholder}
           />
         );
       })}
       <Button type="submit" className="w-fit py-5 px-12">
-        Siguiente
+        {props.btnText ?? "Siguiente"}
       </Button>
     </form>
   );

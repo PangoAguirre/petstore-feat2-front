@@ -1,5 +1,6 @@
 "use client";
 
+import { Info } from "@/components/common/Info";
 import { BasicForm, FieldConfig } from "@/components/suppliers/BasicForm";
 import { StepScreen } from "@/components/suppliers/StepScreen";
 import { Button } from "@/components/ui/button";
@@ -13,22 +14,22 @@ export default function NewSupplier() {
 
   const generalInfoFields: FieldConfig[] = [
     {
-      name: "name",
+      id: "name",
       label: "Nombre",
       placeholder: "Ingrese el nombre del proveedor",
     },
     {
-      name: "descrition",
+      id: "descrition",
       label: "Descripción",
       placeholder: "Ingrese una breve descripción",
     },
     {
-      name: "category",
+      id: "category",
       label: "Categoría",
       placeholder: "Ingrese la categoría",
     },
     {
-      name: "deliveryTime",
+      id: "deliveryTime",
       label: "Tiempo de Entrega",
       placeholder: "Ingrese el tiempo de entrega (días)",
     },
@@ -36,22 +37,22 @@ export default function NewSupplier() {
 
   const contactInfo: FieldConfig[] = [
     {
-      name: "phone",
+      id: "phone",
       label: "Teléfono",
       placeholder: "Ingrese el número de teléfono",
     },
     {
-      name: "email",
+      id: "email",
       label: "Email",
       placeholder: "Ingrese el correo electrónico",
     },
     {
-      name: "socials",
+      id: "socials",
       label: "Redes Sociales",
       placeholder: "Enlace a las redes sociales",
     },
     {
-      name: "address",
+      id: "address",
       label: "Dirección Física",
       placeholder: "Ingrese la dirección completa",
     },
@@ -59,22 +60,22 @@ export default function NewSupplier() {
 
   const paymentConditions: FieldConfig[] = [
     {
-      name: "paymentDeadline",
+      id: "paymentDeadline",
       label: "Plazo de Pago",
       placeholder: "Ingrese el plazo (días)",
     },
     {
-      name: "paymentMethod",
+      id: "paymentMethod",
       label: "Método de Pago",
       placeholder: "Seleccione el método de pago",
     },
     {
-      name: "paymentPenalty",
+      id: "paymentPenalty",
       label: "Penalización",
       placeholder: "Ingrese la penalización por retraso (si aplica)",
     },
     {
-      name: "returnPolicies",
+      id: "returnPolicies",
       label: "Políticas de Devolución",
       placeholder: "Ingrese las políticas de devolución",
     },
@@ -151,22 +152,6 @@ export default function NewSupplier() {
           />
         </div>
       </StepScreen>
-    </div>
-  );
-}
-
-function Info({
-  title,
-  desc,
-  ...props
-}: React.ComponentProps<"div"> & { title: string; desc?: string }) {
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <h1 className="text-4xl font-bold">{title}</h1>
-      {desc && <p>{desc}</p>}
-      {props.children && (
-        <div className="flex gap-4 justify-around">{props.children}</div>
-      )}
     </div>
   );
 }

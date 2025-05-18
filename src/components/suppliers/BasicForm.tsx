@@ -6,9 +6,12 @@ import {
   FieldValues,
   SubmitHandler,
 } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export interface FieldConfig extends InputFieldProps {
   rules?: RegisterOptions<FieldValues>;
+  type?: z.ZodType;
 }
 
 interface StepCompProps {
@@ -18,20 +21,43 @@ interface StepCompProps {
 }
 
 export function BasicForm(props: StepCompProps) {
-  const { register, handleSubmit } = useForm();
+  const schema = z
+    .object(
+      props.fields.reduce((acc: Record<string, z.ZodType>, f) => {
+        acc[f.id] = f.type ?? z.string();
+        return acc;
+      }, {}),
+    )
+    .required();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(schema),
+  });
 
   return (
     <form
       onSubmit={handleSubmit(props.onSubmit)}
       className="flex flex-col gap-10 grow py-8"
     >
-      {props.fields.map(({ rules, ...fProps }, idx) => {
+      {props.fields.map(({ rules, ...field }, idx) => {
         return (
           <InputField
-            {...register(fProps.id, rules)}
-            {...fProps}
-            required={rules?.required === true}
+            {...register(field.id, rules)}
+            {...field}
             key={idx}
+            hint={
+              errors[field.id]?.message ? (
+                <span className="text-red-500">
+                  {errors[field.id]?.message?.toString()}
+                </span>
+              ) : (
+                field.hint
+              )
+            }
           />
         );
       })}

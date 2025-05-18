@@ -4,6 +4,7 @@ import { BasicForm, FieldConfig } from "@/components/suppliers/BasicForm";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { motion } from "motion/react";
+import { z } from "zod";
 
 export default function InitialConfig() {
   const [showForm, setShowForm] = useState(false);
@@ -13,20 +14,34 @@ export default function InitialConfig() {
       id: "username",
       label: "Nombre de Usuario",
       placeholder: "Introduce tu nombre de usuario",
-      rules: { required: true, minLength: 3 },
+      required: true,
     },
     {
       id: "email",
       label: "Correo Electrónico",
       placeholder: "Introduce tu correo electrónico",
-      rules: { required: true, minLength: 3 },
+      required: true,
+      type: z.string().email(),
     },
     {
       id: "password",
       label: "Contraseña",
       placeholder: "Introduce tu contraseña",
       hint: "Máximo 100 caracteres",
-      rules: { required: true, maxLength: 100 },
+      required: true,
+      type: z.string().refine(
+        (pass) => {
+          return (
+            pass.length >= 7 &&
+            pass.match(/.*[A-Z].*/) &&
+            pass.match(/.*[^a-zA-Z0-9].*/)
+          );
+        },
+        {
+          message:
+            "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
+        },
+      ),
     },
   ];
 

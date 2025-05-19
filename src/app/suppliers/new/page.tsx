@@ -5,6 +5,7 @@ import { BasicForm, FieldConfigs } from "@/components/suppliers/BasicForm";
 import { NewProduct } from "@/components/suppliers/NewProduct";
 import { ProductCard } from "@/components/suppliers/ProductCard";
 import { StepScreen } from "@/components/suppliers/StepScreen";
+import { Summary } from "@/components/suppliers/Summary";
 import { Button } from "@/components/ui/button";
 import { useRef, useState } from "react";
 import { FieldValues } from "react-hook-form";
@@ -130,13 +131,7 @@ export default function NewSupplier() {
         </Info>
         <div className={innerDivCn}>
           <Info title="Revisión Final" />
-          {/*TODO: use actual values*/}
-          <ul>
-            <li>Datos Generales</li>
-            <li>Productos Asociados</li>
-            <li>Información de Contacto</li>
-            <li>Condiciones de Pago</li>
-          </ul>
+          <Summary info={supplierData.current as Record<string, string>} />
         </div>
       </StepScreen>
     </div>

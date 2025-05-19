@@ -6,14 +6,23 @@ import { NewProduct } from "@/components/suppliers/NewProduct";
 import { ProductCard } from "@/components/suppliers/ProductCard";
 import { StepScreen } from "@/components/suppliers/StepScreen";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { FieldValues } from "react-hook-form";
 import { ClassNameValue } from "tailwind-merge";
 
 export default function NewSupplier() {
   const [step, setStep] = useState(1);
   const [showProductForm, setShowProductForm] = useState(false);
+  const supplierData = useRef<Record<string, unknown>>({});
 
   const nextStep = () => setStep((s) => s + 1);
+
+  const handleStepSubmit = (data: FieldValues) => {
+    Object.entries(data).forEach(([k, v]) => {
+      supplierData.current[k] = v;
+    });
+    nextStep();
+  };
 
   const innerDivCn: ClassNameValue =
     "grid grid-cols-2 justify-around items-center px-4 gap-16 w-full";
@@ -31,7 +40,7 @@ export default function NewSupplier() {
             title="Paso 1 - Datos Generales"
             desc="Ingrese los datos generales del proveedor."
           />
-          <BasicForm onSubmit={() => nextStep()} fields={generalInfoFields} />
+          <BasicForm onSubmit={handleStepSubmit} fields={generalInfoFields} />
         </div>
       </StepScreen>
 
@@ -73,7 +82,14 @@ export default function NewSupplier() {
         <NewProduct
           open={showProductForm}
           onOpenChange={setShowProductForm}
-          onSubmit={() => alert("new product!")}
+          onSubmit={(data) => {
+            if (supplierData.current.products instanceof Array) {
+              supplierData.current.products.push(data);
+            } else {
+              supplierData.current.products = new Array(data);
+            }
+            setShowProductForm(false);
+          }}
           onCancel={() => setShowProductForm(false)}
         />
       </StepScreen>
@@ -85,7 +101,7 @@ export default function NewSupplier() {
         />
         <div className={innerDivCn}>
           <Info title="Contacto" />
-          <BasicForm onSubmit={() => nextStep()} fields={contactInfo} />
+          <BasicForm onSubmit={handleStepSubmit} fields={contactInfo} />
         </div>
       </StepScreen>
 
@@ -96,7 +112,7 @@ export default function NewSupplier() {
         />
         <div className={innerDivCn}>
           <Info title="Condiciones de Pago" />
-          <BasicForm onSubmit={() => nextStep()} fields={paymentConditions} />
+          <BasicForm onSubmit={handleStepSubmit} fields={paymentConditions} />
         </div>
       </StepScreen>
 
@@ -108,7 +124,9 @@ export default function NewSupplier() {
           <Button variant={"outline"} onClick={() => setStep(1)}>
             Volver a Revisar
           </Button>
-          <Button onClick={() => alert("save")}>Finalizar</Button>
+          <Button onClick={() => console.log(supplierData.current)}>
+            Finalizar
+          </Button>
         </Info>
         <div className={innerDivCn}>
           <Info title="Revisión Final" />

@@ -6,28 +6,30 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField } from "../ui/form";
 import { PropsWithChildren } from "react";
 
-export interface FieldConfig extends InputFieldProps {
-  type?: z.ZodType;
+export interface FieldConfigs {
+  [id: string]: Omit<InputFieldProps, "id"> & { type?: z.ZodType };
 }
 
 export interface StepCompProps extends PropsWithChildren {
-  fields: FieldConfig[];
+  fields: FieldConfigs;
   onSubmit: SubmitHandler<FieldValues>;
   btnText?: string;
 }
 
 export function BasicForm(props: StepCompProps) {
-  const schema = z
-    .object(
-      props.fields.reduce((acc: Record<string, z.ZodType>, f) => {
-        acc[f.id] = f.type ?? z.string(); //.nonempty({ message: "Required" }); //FIXME: uncommment
-        return acc;
-      }, {}),
-    )
-    .required();
+  const schema = z.object(
+    Object.fromEntries(
+      Object.entries(props.fields).map(([fieldId, { type }]) => [
+        fieldId,
+        type ?? z.string().nonempty({ message: "Requerido" }),
+      ]),
+    ),
+  );
 
   const form = useForm({
-    defaultValues: Object.fromEntries(props.fields.map((f) => [f.id, ""])),
+    defaultValues: Object.fromEntries(
+      Object.entries(props.fields).map(([id]) => [id, ""]),
+    ),
     resolver: zodResolver(schema),
   });
 
@@ -37,15 +39,20 @@ export function BasicForm(props: StepCompProps) {
         onSubmit={form.handleSubmit(props.onSubmit)}
         className="flex flex-col gap-10 grow py-8"
       >
-        {props.fields.map((fieldProps, idx) => {
+        {Object.entries(props.fields).map(([id, fieldProps]) => {
           return (
             <FormField
               rules={{ required: true }}
-              key={idx}
-              name={fieldProps.id}
+              key={id}
+              name={id}
               control={form.control}
               render={({ field, fieldState }) => (
-                <InputField {...field} {...fieldProps} state={fieldState} />
+                <InputField
+                  id={id}
+                  {...field}
+                  {...fieldProps}
+                  state={fieldState}
+                />
               )}
             />
           );

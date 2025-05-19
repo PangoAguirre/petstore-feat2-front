@@ -1,5 +1,5 @@
 import { FieldValues, SubmitHandler } from "react-hook-form";
-import { BasicForm, FieldConfig } from "./BasicForm";
+import { BasicForm, FieldConfigs } from "./BasicForm";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -20,15 +20,6 @@ export function NewProduct({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const fields: FieldConfig[] = [
-    { id: "name", label: "Nombre" },
-    { id: "description", label: "Precio" },
-    { id: "disponibility", label: "Disponibilidad" },
-    { id: "brand", label: "Marca" },
-    { id: "rating", label: "Calificación" },
-    { id: "image", label: "Foto" },
-  ];
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="flex flex-col sm:flex-row items-center px-16 gap-8 sm:max-w-4xl bg-secondary border-black">
@@ -59,3 +50,12 @@ export function NewProduct({
     </Dialog>
   );
 }
+
+const fields: FieldConfigs = {
+  name: { label: "Nombre" },
+  description: { label: "Precio" },
+  disponibility: { label: "Disponibilidad" },
+  brand: { label: "Marca" },
+  rating: { label: "Calificación" },
+  image: { label: "Foto" },
+};

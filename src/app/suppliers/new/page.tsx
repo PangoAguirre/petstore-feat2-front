@@ -1,7 +1,7 @@
 "use client";
 
 import { Info } from "@/components/common/Info";
-import { BasicForm, FieldConfig } from "@/components/suppliers/BasicForm";
+import { BasicForm, FieldConfigs } from "@/components/suppliers/BasicForm";
 import { NewProduct } from "@/components/suppliers/NewProduct";
 import { ProductCard } from "@/components/suppliers/ProductCard";
 import { StepScreen } from "@/components/suppliers/StepScreen";
@@ -14,76 +14,6 @@ export default function NewSupplier() {
   const [showProductForm, setShowProductForm] = useState(false);
 
   const nextStep = () => setStep((s) => s + 1);
-
-  const generalInfoFields: FieldConfig[] = [
-    {
-      id: "name",
-      label: "Nombre",
-      placeholder: "Ingrese el nombre del proveedor",
-    },
-    {
-      id: "descrition",
-      label: "Descripción",
-      placeholder: "Ingrese una breve descripción",
-    },
-    {
-      id: "category",
-      label: "Categoría",
-      hint: "Ej. Alimentos, Juguetes, etc.",
-      placeholder: "Ingrese la categoría",
-    },
-    {
-      id: "deliveryTime",
-      label: "Tiempo de Entrega",
-      placeholder: "Ingrese el tiempo de entrega (días)",
-    },
-  ];
-
-  const contactInfo: FieldConfig[] = [
-    {
-      id: "phone",
-      label: "Teléfono",
-      placeholder: "Ingrese el número de teléfono",
-    },
-    {
-      id: "email",
-      label: "Email",
-      placeholder: "Ingrese el correo electrónico",
-    },
-    {
-      id: "socials",
-      label: "Redes Sociales",
-      placeholder: "Enlace a las redes sociales",
-    },
-    {
-      id: "address",
-      label: "Dirección Física",
-      placeholder: "Ingrese la dirección completa",
-    },
-  ];
-
-  const paymentConditions: FieldConfig[] = [
-    {
-      id: "paymentDeadline",
-      label: "Plazo de Pago",
-      placeholder: "Ingrese el plazo (días)",
-    },
-    {
-      id: "paymentMethod",
-      label: "Método de Pago",
-      placeholder: "Seleccione el método de pago",
-    },
-    {
-      id: "paymentPenalty",
-      label: "Penalización",
-      placeholder: "Ingrese la penalización por retraso (si aplica)",
-    },
-    {
-      id: "returnPolicies",
-      label: "Políticas de Devolución",
-      placeholder: "Ingrese las políticas de devolución",
-    },
-  ];
 
   const innerDivCn: ClassNameValue =
     "grid grid-cols-2 justify-around items-center px-4 gap-16 w-full";
@@ -194,3 +124,61 @@ export default function NewSupplier() {
     </div>
   );
 }
+
+const generalInfoFields: FieldConfigs = {
+  name: {
+    label: "Nombre",
+    placeholder: "Ingrese el nombre del proveedor",
+  },
+  descrition: {
+    label: "Descripción",
+    placeholder: "Ingrese una breve descripción",
+  },
+  category: {
+    label: "Categoría",
+    hint: "Ej. Alimentos, Juguetes, etc.",
+    placeholder: "Ingrese la categoría",
+  },
+  deliveryTime: {
+    label: "Tiempo de Entrega",
+    placeholder: "Ingrese el tiempo de entrega (días)",
+  },
+};
+
+const contactInfo: FieldConfigs = {
+  phone: {
+    label: "Teléfono",
+    placeholder: "Ingrese el número de teléfono",
+  },
+  email: {
+    label: "Email",
+    placeholder: "Ingrese el correo electrónico",
+  },
+  socials: {
+    label: "Redes Sociales",
+    placeholder: "Enlace a las redes sociales",
+  },
+  address: {
+    label: "Dirección Física",
+    placeholder: "Ingrese la dirección completa",
+  },
+};
+
+const paymentConditions: FieldConfigs = {
+  paymentDeadline: {
+    label: "Plazo de Pago",
+    placeholder: "Ingrese el plazo (días)",
+  },
+  paymentMethod: {
+    label: "Método de Pago",
+    placeholder: "Seleccione el método de pago",
+  },
+  paymentPenalty: {
+    label: "Penalización",
+    placeholder: "Ingrese la penalización por retraso (si aplica)",
+  },
+  returnPolicies: {
+    label: "Políticas de Devolución",
+    placeholder: "Ingrese las políticas de devolución",
+  },
+};

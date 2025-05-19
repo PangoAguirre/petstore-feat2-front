@@ -1,6 +1,6 @@
 "use client";
 import { Info } from "@/components/common/Info";
-import { BasicForm, FieldConfig } from "@/components/suppliers/BasicForm";
+import { BasicForm, FieldConfigs } from "@/components/suppliers/BasicForm";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { motion } from "motion/react";
@@ -8,42 +8,6 @@ import { z } from "zod";
 
 export default function InitialConfig() {
   const [showForm, setShowForm] = useState(false);
-
-  const fields: FieldConfig[] = [
-    {
-      id: "username",
-      label: "Nombre de Usuario",
-      placeholder: "Introduce tu nombre de usuario",
-      required: true,
-    },
-    {
-      id: "email",
-      label: "Correo Electrónico",
-      placeholder: "Introduce tu correo electrónico",
-      required: true,
-      type: z.string().email(),
-    },
-    {
-      id: "password",
-      label: "Contraseña",
-      placeholder: "Introduce tu contraseña",
-      hint: "Máximo 100 caracteres",
-      required: true,
-      type: z.string().refine(
-        (pass) => {
-          return (
-            pass.length >= 7 &&
-            pass.match(/.*[A-Z].*/) &&
-            pass.match(/.*[^a-zA-Z0-9].*/)
-          );
-        },
-        {
-          message:
-            "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
-        },
-      ),
-    },
-  ];
 
   return showForm ? (
     <motion.div
@@ -72,3 +36,35 @@ export default function InitialConfig() {
     </div>
   );
 }
+
+const fields: FieldConfigs = {
+  username: {
+    label: "Nombre de Usuario",
+    placeholder: "Introduce tu nombre de usuario",
+  },
+
+  email: {
+    label: "Correo Electrónico",
+    placeholder: "Introduce tu correo electrónico",
+    type: z.string().email(),
+  },
+
+  password: {
+    label: "Contraseña",
+    placeholder: "Introduce tu contraseña",
+    hint: "Máximo 100 caracteres",
+    type: z.string().refine(
+      (pass) => {
+        return (
+          pass.length >= 7 &&
+          pass.match(/.*[A-Z].*/) &&
+          pass.match(/.*[^a-zA-Z0-9].*/)
+        );
+      },
+      {
+        message:
+          "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
+      },
+    ),
+  },
+};

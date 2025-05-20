@@ -7,6 +7,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const pwReqMessage =
+  "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.";
 export function pwRequirements(pass: string) {
   return (
     pass.length >= 7 &&
@@ -18,7 +20,7 @@ export function pwRequirements(pass: string) {
 export function createSchema(fields: FieldConfigs) {
   return z.object(
     Object.fromEntries(
-      Object.entries(fields).map(([id, { type }]) => [
+      Object.entries(fields).map(([id, { ztype: type }]) => [
         id,
         type ?? z.string().nonempty({ message: "Requerido" }),
       ]),

@@ -19,7 +19,7 @@ export default function InitialConfig() {
 
   return showForm ? (
     <motion.div
-      initial={{ opacity: 0, scale: 0.4 }}
+      initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", duration: 0.8, bounce: 0 }}
       className="h-full w-full flex flex-col grow items-center p-16 gap-12"
@@ -58,14 +58,15 @@ const fields: FieldConfigs = {
   email: {
     label: "Correo Electrónico",
     placeholder: "Introduce tu correo electrónico",
-    type: z.string().email(),
+    ztype: z.string().email(),
   },
 
   password: {
     label: "Contraseña",
     placeholder: "Introduce tu contraseña",
     hint: "Máximo 100 caracteres",
-    type: z.string().refine(pwRequirements, {
+    type: "password",
+    ztype: z.string().refine(pwRequirements, {
       message:
         "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
     }),

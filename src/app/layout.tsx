@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import NavDash from "@/components/organims/NavDash";
+import FooterRights from "@/components/organims/FooterRights";
 
 export const metadata: Metadata = {
   title: "PetStore Manager",
@@ -12,7 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="h-dvh antialiased">{children}</body>
+      <body className="h-dvh antialiased">
+        <NavDash title="PetStore Dashboard" />
+        {children}
+        <FooterRights />
+      </body>
     </html>
   );
 }

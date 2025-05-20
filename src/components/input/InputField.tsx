@@ -13,12 +13,14 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { HTMLInputTypeAttribute } from "react";
 
 export interface InputFieldProps {
   id: string;
   label: string;
   placeholder?: string;
   hint?: string;
+  type?: HTMLInputTypeAttribute;
 }
 
 export function InputField({
@@ -39,8 +41,8 @@ export function InputField({
         <Input
           id={id}
           placeholder={placeholder}
-          {...props}
           className="bg-white"
+          {...props}
         />
       </FormControl>
       <AnimatePresence>

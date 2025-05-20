@@ -6,7 +6,7 @@ import { FormField } from "../ui/form";
 import { PropsWithChildren } from "react";
 
 export interface FieldConfigs {
-  [id: string]: Omit<InputFieldProps, "id"> & { type?: z.ZodType };
+  [id: string]: Omit<InputFieldProps, "id"> & { ztype?: z.ZodType };
 }
 
 export interface PartialFormProps extends PropsWithChildren {
@@ -31,6 +31,7 @@ export function PartialForm(props: PartialFormProps) {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+
           trigger(Object.keys(props.fields)).then((valid) => {
             if (valid) {
               props.onAction(getValues());

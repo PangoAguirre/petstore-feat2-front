@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="h-dvh antialiased">
+      <body className="min-h-dvh antialiased flex flex-col justify-between">
         <NavDash title="PetStore Dashboard" />
         {children}
         <FooterRights />

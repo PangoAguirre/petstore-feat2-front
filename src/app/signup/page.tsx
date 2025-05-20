@@ -2,7 +2,7 @@
 
 import { Info } from "@/components/common/Info";
 import { FieldConfigs, PartialForm } from "@/components/common/PartialForm";
-import { createSchema, pwRequirements } from "@/lib/utils";
+import { createSchema, pwReqMessage, pwRequirements } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -27,7 +27,7 @@ export default function SignUp() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.4 }}
+      initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", duration: 0.8, bounce: 0 }}
       className="p-16"
@@ -59,19 +59,20 @@ const fields: FieldConfigs = {
   email: {
     label: "Correo electrónico",
     placeholder: "ejemplo@correo.com",
-    type: z.string().email({ message: "Ingrese un email válido" }),
+    ztype: z.string().email({ message: "Ingrese un email válido" }),
   },
   password: {
     label: "Contraseña",
     placeholder: "Ingrese su contraseña",
-    type: z.string().refine(pwRequirements, {
-      message:
-        "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
+    type: "password",
+    ztype: z.string().refine(pwRequirements, {
+      message: pwReqMessage,
     }),
   },
   passwordAgain: {
     label: "Confirmación de contraseña",
     placeholder: "Repita su contraseña",
-    type: z.string().nonempty({ message: "Requerido" }),
+    type: "password",
+    ztype: z.string().nonempty({ message: "Requerido" }),
   },
 };

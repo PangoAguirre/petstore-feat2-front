@@ -1,29 +1,41 @@
 "use client";
 import { Info } from "@/components/common/Info";
-import { BasicForm, FieldConfigs } from "@/components/suppliers/BasicForm";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { motion } from "motion/react";
 import { z } from "zod";
+import { createDefaultValues, createSchema, pwRequirements } from "@/lib/utils";
+import { FieldConfigs, PartialForm } from "@/components/common/PartialForm";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function InitialConfig() {
   const [showForm, setShowForm] = useState(false);
+  const form = useForm({
+    defaultValues: createDefaultValues(fields),
+    resolver: zodResolver(createSchema(fields)),
+    mode: "onChange",
+  });
 
   return showForm ? (
     <motion.div
       initial={{ opacity: 0, scale: 0.4 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: "spring", duration: 0.8, bounce: 0 }}
-      className="h-full w-full flex flex-col grow items-center gap-12"
+      className="h-full w-full flex flex-col grow items-center p-16 gap-12"
     >
-      <div className="h-full grid grid-cols-2 justify-around items-center px-16 gap-20">
-        <h1 className="text-4xl font-bold">Crear Primer Administrador</h1>
-        <BasicForm
-          onSubmit={() => alert("submit")}
+      <FormProvider {...form}>
+        <PartialForm
+          leftInfo={
+            <h1 className="text-4xl font-bold text-center">
+              Crear Primer Administrador
+            </h1>
+          }
+          onAction={() => console.log("TODO: ", form.getValues())}
           fields={fields}
           btnText="Crear Administrador"
         />
-      </div>
+      </FormProvider>
     </motion.div>
   ) : (
     <div className="p-16">
@@ -53,18 +65,9 @@ const fields: FieldConfigs = {
     label: "Contraseña",
     placeholder: "Introduce tu contraseña",
     hint: "Máximo 100 caracteres",
-    type: z.string().refine(
-      (pass) => {
-        return (
-          pass.length >= 7 &&
-          pass.match(/.*[A-Z].*/) &&
-          pass.match(/.*[^a-zA-Z0-9].*/)
-        );
-      },
-      {
-        message:
-          "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
-      },
-    ),
+    type: z.string().refine(pwRequirements, {
+      message:
+        "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
+    }),
   },
 };

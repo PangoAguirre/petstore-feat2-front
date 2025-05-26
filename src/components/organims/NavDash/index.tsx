@@ -39,4 +39,3 @@ const index = ({ title = "Title" }: Indexprops) => {
 };
 
 export default index;
-

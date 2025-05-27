@@ -2,13 +2,17 @@
 
 import { Info } from "@/components/common/Info";
 import { FieldConfigs, PartialForm } from "@/components/common/PartialForm";
+import { useSignUpMutation } from "@/lib/graphql/codegen";
 import { createSchema, pwReqMessage, pwRequirements } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
+import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 export default function SignUp() {
+  const [signup] = useSignUpMutation();
+  const router = useRouter();
   const form = useForm({
     defaultValues: {
       fullName: "",
@@ -35,7 +39,19 @@ export default function SignUp() {
       <FormProvider {...form}>
         <PartialForm
           onAction={(data) => {
-            console.log(data);
+            signup({
+              variables: {
+                email: data.email,
+                nombre: data.fullName,
+                password: data.password,
+              },
+            }).then(({ errors }) => {
+              if (errors) {
+                console.error(errors[0].message);
+              } else {
+                router.push("/login");
+              }
+            });
           }}
           fields={fields}
           btnText="Registrarse"

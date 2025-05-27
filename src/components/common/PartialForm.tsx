@@ -4,6 +4,7 @@ import { useFormContext, FieldValues, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { FormField } from "../ui/form";
 import { PropsWithChildren } from "react";
+import { LoaderCircle } from "lucide-react";
 
 export interface FieldConfigs {
   [id: string]: Omit<InputFieldProps, "id"> & { ztype?: z.ZodType };
@@ -14,6 +15,7 @@ export interface PartialFormProps extends PropsWithChildren {
   btnText?: string;
   leftInfo?: React.ReactNode;
   onAction: SubmitHandler<FieldValues>;
+  loading?: boolean;
 }
 
 export function PartialForm(props: PartialFormProps) {
@@ -57,8 +59,16 @@ export function PartialForm(props: PartialFormProps) {
           />
         ))}
         {props.children ?? (
-          <Button type="submit" className="w-fit py-5 px-12">
-            {props.btnText ?? "Siguiente"}
+          <Button
+            type="submit"
+            className="w-fit min-w-20 py-5 px-12"
+            disabled={props.loading}
+          >
+            {props.loading ? (
+              <LoaderCircle className="animate-spin" />
+            ) : (
+              (props.btnText ?? "Siguiente")
+            )}
           </Button>
         )}
       </form>

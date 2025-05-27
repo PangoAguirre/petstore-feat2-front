@@ -11,8 +11,11 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 export default function SignUp() {
-  const [signup] = useSignUpMutation();
   const router = useRouter();
+  const [signup, { loading }] = useSignUpMutation({
+    onCompleted: () => router.push("/login"),
+  });
+
   const form = useForm({
     defaultValues: {
       fullName: "",
@@ -38,6 +41,7 @@ export default function SignUp() {
     >
       <FormProvider {...form}>
         <PartialForm
+          loading={loading}
           onAction={(data) => {
             signup({
               variables: {
@@ -45,12 +49,6 @@ export default function SignUp() {
                 nombre: data.fullName,
                 password: data.password,
               },
-            }).then(({ errors }) => {
-              if (errors) {
-                console.error(errors[0].message);
-              } else {
-                router.push("/login");
-              }
             });
           }}
           fields={fields}

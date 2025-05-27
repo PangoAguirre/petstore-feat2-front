@@ -12,4 +12,3 @@ const index = ({ text = "Text" }: Indexprops) => {
 };
 
 export default index;
-

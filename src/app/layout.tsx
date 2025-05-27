@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavDash from "@/components/organims/NavDash";
 import FooterRights from "@/components/organims/FooterRights";
+import { ApolloProvWrap } from "@/lib/graphql/Provider";
+import { Toaster } from "sonner";
+import { InfoIcon } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "PetStore Manager",
@@ -14,10 +17,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-dvh antialiased flex flex-col justify-between">
-        <NavDash title="PetStore Dashboard" />
-        {children}
-        <FooterRights />
+      <body className="h-dvh antialiased">
+        <ApolloProvWrap>
+          <NavDash title="PetStore " />
+          {children}
+          <FooterRights />
+          <Toaster
+            icons={{
+              error: (
+                <InfoIcon className="fill-red-600 text-toaster-foreground" />
+              ),
+            }}
+            toastOptions={{
+              classNames: {
+                toast:
+                  "!bg-toaster !text-toaster-foreground !p-10 !rounded-[40px]",
+                icon: "!mr-4",
+                title: "!font-bold !text-lg",
+              },
+            }}
+          />
+        </ApolloProvWrap>
       </body>
     </html>
   );

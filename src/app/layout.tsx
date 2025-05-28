@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import NavDash from "@/components/organims/NavDash";
 import FooterRights from "@/components/organims/FooterRights";
-import { ApolloProvWrap } from "@/lib/graphql/Provider";
 import { Toaster } from "sonner";
 import { InfoIcon } from "lucide-react";
+import { Providers } from "@/lib/Providers";
 
 export const metadata: Metadata = {
   title: "PetStore Manager",
@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="h-dvh antialiased">
-        <ApolloProvWrap>
+        <Providers>
           <NavDash title="PetStore " />
           {children}
           <FooterRights />
@@ -37,7 +37,7 @@ export default function RootLayout({
               },
             }}
           />
-        </ApolloProvWrap>
+        </Providers>
       </body>
     </html>
   );

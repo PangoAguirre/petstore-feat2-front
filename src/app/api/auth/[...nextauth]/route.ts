@@ -1,4 +1,4 @@
-import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
+import { ApolloClient, ApolloError, gql, InMemoryCache } from "@apollo/client";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
@@ -53,6 +53,11 @@ const handler = NextAuth({
             token: res,
           };
         } catch (err) {
+          if (err instanceof ApolloError) {
+            if (err.networkError) {
+              throw new Error("No es posible contactar con el servidor");
+            }
+          }
           console.error(err);
           throw err;
         }
@@ -65,7 +70,7 @@ const handler = NextAuth({
         token.id = user.id;
         token.email = user.email;
         token.name = user.name;
-        token.accessToken = user.token; // your JWT
+        token.accessToken = user.token;
       }
       return token;
     },

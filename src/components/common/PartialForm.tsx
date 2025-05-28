@@ -14,7 +14,7 @@ export interface PartialFormProps extends PropsWithChildren {
   fields: FieldConfigs;
   btnText?: string;
   leftInfo?: React.ReactNode;
-  onAction: SubmitHandler<FieldValues>;
+  onAction?: SubmitHandler<FieldValues>;
   loading?: boolean;
 }
 
@@ -35,7 +35,7 @@ export function PartialForm(props: PartialFormProps) {
           e.preventDefault();
 
           trigger(Object.keys(props.fields)).then((valid) => {
-            if (valid) {
+            if (valid && props.onAction) {
               props.onAction(getValues());
             }
           });

@@ -3,6 +3,8 @@ import { onError } from "@apollo/client/link/error";
 import { GraphQLFormattedError } from "graphql";
 import { ServerOffIcon } from "lucide-react";
 import { toast } from "sonner";
+import { setContext } from "@apollo/client/link/context";
+import { getSession } from "next-auth/react";
 
 const handleGraphQLError = ({ message, path }: GraphQLFormattedError) => {
   if (
@@ -21,6 +23,16 @@ const handleGraphQLError = ({ message, path }: GraphQLFormattedError) => {
 
 const httpLink = new HttpLink({
   uri: "http://localhost:8082/graphql",
+});
+
+const authLink = setContext(async (_, { headers }) => {
+  const session = await getSession();
+  return {
+    headers: {
+      ...headers,
+      Authorization: session?.jwt ? `Bearer ${session.jwt}` : "",
+    },
+  };
 });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -43,6 +55,6 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 export const client = new ApolloClient({
-  link: from([errorLink, httpLink]),
+  link: from([errorLink, authLink, httpLink]),
   cache: new InMemoryCache(),
 });

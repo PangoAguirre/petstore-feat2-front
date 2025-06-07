@@ -1,26 +1,40 @@
-import React from 'react'
-import { SmallTextDefault, SubTextoMini } from '../heroTitle'
+import React from "react";
+import { SmallTextDefault, SubTextoMini } from "../heroTitle";
+import { Input } from "@/components/ui/input";
 
 interface Indexprops {
-    title?: string;
-    holder?: string;
-    text?: string;
+  title?: string;
+  holder?: string;
+  text?: string;
+  value?: string;
+  setValue?: (value: string) => void;
 }
 
-const index = ({title = 'Title', holder = 'Holder', text = 'Text'}: Indexprops) => {
+const index = ({
+  title = "Title",
+  holder = "Holder",
+  text = "Text",
+  value,
+  setValue,
+}: Indexprops) => {
   return (
     <div>
-        <div className='font-bold'>
-            <SmallTextDefault text={title}></SmallTextDefault>
-        </div>
-        <div className='flex items-center w-140 h-9 ring-2 ring-gray-200 rounded-[6]'>
-            <input type="text" placeholder={holder} className='ml-4'/>
-        </div>
-        <div className='opacity-75'>
-            <SubTextoMini text={text}></SubTextoMini>
-        </div>
+      <div className="font-bold">
+        <SmallTextDefault text={title}></SmallTextDefault>
+      </div>
+      <Input
+        type="email"
+        required
+        value={value}
+        onChange={(e) => setValue && setValue(e.target.value)}
+        placeholder={holder}
+        className="w-140 h-9 ring-2 ring-gray-200 rounded-[6]"
+      />
+      <div className="opacity-75">
+        <SubTextoMini text={text}></SubTextoMini>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default index
+export default index;

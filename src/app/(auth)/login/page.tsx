@@ -65,6 +65,8 @@ export default function Login() {
               className="py-5 px-12"
               variant={"outline"}
               disabled={loading}
+              type="button"
+              onClick={() => router.push("/recover-password")}
             >
               ¿Olvidaste tu contraseña?
             </Button>

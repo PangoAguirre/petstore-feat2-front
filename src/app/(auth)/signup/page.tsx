@@ -8,12 +8,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { z } from "zod";
 
 export default function SignUp() {
   const router = useRouter();
   const [signup, { loading }] = useSignUpMutation({
-    onCompleted: () => router.push("/login"),
+    onCompleted: () => {
+      toast.success("Registro exitoso!");
+      router.push("/login");
+    },
   });
 
   const form = useForm({

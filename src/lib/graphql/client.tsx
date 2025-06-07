@@ -22,7 +22,7 @@ const handleGraphQLError = ({ message, path }: GraphQLFormattedError) => {
 };
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:8082/graphql",
+  uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
 });
 
 const authLink = setContext(async (_, { headers }) => {

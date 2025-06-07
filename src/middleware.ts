@@ -1,11 +1,15 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 
+function isAuthRelated(path: string) {
+  return ["/login", "/signup", "/recover-password"].some((p) => p === path);
+}
+
 export default withAuth(
   async function middleware(req) {
     const token = req.nextauth.token;
 
-    if (token && req.nextUrl.pathname === "/login") {
+    if (token && isAuthRelated(req.nextUrl.pathname)) {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 
@@ -14,10 +18,8 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        if (req.nextUrl.pathname === "/login") return true;
-
+        if (isAuthRelated(req.nextUrl.pathname)) return true;
         if (process.env.NODE_ENV === "development") return true;
-
         if (!token) return false;
         return true;
       },
@@ -28,6 +30,8 @@ export default withAuth(
 export const config = {
   matcher: [
     "/login",
+    "/signup",
+    "/recover-password",
     "/dashboard",
     "/suppliers/:path",
     "/admin/new-supplier-manager",

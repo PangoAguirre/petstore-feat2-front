@@ -4,7 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 
 const loginClient = new ApolloClient({
-  uri: "http://localhost:8082/graphql",
+  uri: `${process.env.BACKEND_URL}/graphql`,
   cache: new InMemoryCache(),
 });
 

@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="h-dvh antialiased">
+      <body className="h-dvh max-w-dvw antialiased overflow-x-hidden">
         <Providers>
           <div className="min-h-full flex flex-col justify-between ">
             {children}

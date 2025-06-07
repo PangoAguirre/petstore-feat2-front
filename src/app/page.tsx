@@ -23,7 +23,7 @@ export default function Home() {
             <Link
               key={idx}
               href={r}
-              className="inline-block mx-2 text-blue-600 hover:text-[1.2rem] transition-all ease-out"
+              className="inline-block mx-2 text-blue-600 hover:scale-120 transition-all ease-out"
             >
               {r}
             </Link>

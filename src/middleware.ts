@@ -15,6 +15,9 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         if (req.nextUrl.pathname === "/login") return true;
+
+        if (process.env.NODE_ENV === "development") return true;
+
         if (!token) return false;
         return true;
       },

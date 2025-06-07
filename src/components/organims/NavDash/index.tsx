@@ -11,15 +11,17 @@ interface Indexprops {
 const index = ({ title = "Title" }: Indexprops) => {
   return (
     <nav className="w-screen h-[140] bg-secondary shadow-md inset-shadow-sm">
-      <div className=" flex items-center">
-        <div>
-          <Logo></Logo>
+      <div className="flex items-center justify-between gap-4 lg:gap-0 overflow-hidden">
+        <div className="flex items-center">
+          <div>
+            <Logo></Logo>
+          </div>
+          <div className="ml-8 font-bold">
+            <SubTitle text={title}></SubTitle>
+          </div>
         </div>
-        <div className="ml-10 font-bold">
-          <SubTitle text={title}></SubTitle>
-        </div>
-        <div className="flex flex-row justify-end w-screen gap-5 mr-5">
-          <NavTitle title="Proveedores" link="/"></NavTitle>
+        <div className="hidden lg:flex flex-row justify-end w-screen gap-5 mr-5">
+          <NavTitle title="Proveedores" link="/suppliers"></NavTitle>
           <NavTitle title="Gestión de Usuarios" link="/"></NavTitle>
           <NavTitle title="Configuración" link="/"></NavTitle>
         </div>

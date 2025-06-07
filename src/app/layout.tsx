@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import NavDash from "@/components/organims/NavDash";
-import FooterRights from "@/components/organims/FooterRights";
 import { Toaster } from "sonner";
 import { InfoIcon } from "lucide-react";
 import { Providers } from "@/lib/Providers";
@@ -19,9 +17,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-dvh antialiased">
         <Providers>
-          <NavDash title="PetStore " />
-          {children}
-          <FooterRights />
+          <div className="min-h-full flex flex-col justify-between ">
+            {children}
+          </div>
           <Toaster
             icons={{
               error: (

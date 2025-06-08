@@ -1,4 +1,10 @@
-import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  from,
+  ApolloLink,
+} from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { GraphQLFormattedError } from "graphql";
 import { ServerOffIcon } from "lucide-react";
@@ -21,8 +27,26 @@ const handleGraphQLError = ({ message, path }: GraphQLFormattedError) => {
   return false;
 };
 
-const httpLink = new HttpLink({
-  uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
+const serviceLinks = {
+  auth: new HttpLink({
+    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}:8081/graphql`,
+  }),
+  suppliers: new HttpLink({
+    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}:8082/graphql`,
+  }),
+};
+
+const httpLink = new ApolloLink((op, fw) => {
+  const { serviceName } = op.getContext();
+  if (serviceName in serviceLinks) {
+    return serviceLinks[serviceName as keyof typeof serviceLinks].request(
+      op,
+      fw,
+    );
+  }
+
+  console.warn(`No link found for ${serviceName}. Using default one: 'auth'.`);
+  return serviceLinks.auth.request(op, fw);
 });
 
 const authLink = setContext(async (_, { headers }) => {

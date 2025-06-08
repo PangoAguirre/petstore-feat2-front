@@ -15,6 +15,7 @@ import { DialogHeader } from "../ui/dialog";
 import { FieldConfigs, PartialForm } from "../common/PartialForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createDefaultValues, createSchema } from "@/lib/utils";
+import { z } from "zod";
 
 export function NewProduct({
   onSubmit,
@@ -45,7 +46,13 @@ export function NewProduct({
           </DialogDescription>
         </DialogHeader>
         <FormProvider {...form}>
-          <PartialForm onAction={onSubmit} fields={fields}>
+          <PartialForm
+            onAction={(data) => {
+              form.reset();
+              onSubmit(data);
+            }}
+            fields={fields}
+          >
             <div className="flex gap-4">
               <Button
                 variant={"outline"}
@@ -67,10 +74,12 @@ export function NewProduct({
 }
 
 const fields: FieldConfigs = {
+  code: { label: "Código" },
   name: { label: "Nombre" },
-  description: { label: "Precio" },
-  disponibility: { label: "Disponibilidad" },
-  brand: { label: "Marca" },
-  rating: { label: "Calificación" },
-  image: { label: "Foto" },
+  description: { label: "Descripción" },
+  price: {
+    label: "Precio",
+    type: "number",
+    ztype: z.coerce.number().positive(),
+  },
 };

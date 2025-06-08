@@ -7,13 +7,40 @@ import { ProductCard } from "@/components/suppliers/ProductCard";
 import { StepScreen } from "@/components/suppliers/StepScreen";
 import { Summary } from "@/components/suppliers/Summary";
 import { Button } from "@/components/ui/button";
+import { useNewSupplierMutation } from "@/lib/graphql/codegen";
 import { createDefaultValues, createSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { ClassNameValue } from "tailwind-merge";
+import { z } from "zod";
 
 export default function NewSupplier() {
+  const [createSupplier, {}] = useNewSupplierMutation({
+    context: { serviceName: "suppliers" },
+    onError: ({ graphQLErrors }) => {
+      if (graphQLErrors.length > 0) {
+        graphQLErrors.forEach((e) =>
+          toast.error("Error", { description: e.message }),
+        );
+      } else {
+        toast.error("Error", {
+          description:
+            "Ha ocurrido un error al hacer la solicitud, intente más tarde o contacte con un administrador.",
+        });
+      }
+    },
+    onCompleted: () => {
+      toast.success("Proveedor creado exitosamente!");
+      setStep(1);
+      form.reset();
+    },
+  });
+  const { data } = useSession();
+
   const [step, setStep] = useState(1);
   const [showProductForm, setShowProductForm] = useState(false);
   const allFields = {
@@ -37,6 +64,34 @@ export default function NewSupplier() {
   });
 
   const nextStep = () => setStep((s) => s + 1);
+
+  const handleSubmit = () => {
+    const values = form.getValues();
+
+    createSupplier({
+      variables: {
+        nombre: values.name,
+        nit: values.nit,
+        email: values.email,
+        direccion: values.address,
+        telefono: values.phone,
+        idUsuarioCreador: data!.user.id,
+        productos: values.products.map((p: Record<string, unknown>) => ({
+          codigo: p.code,
+          nombre: p.name,
+          descripcion: p.description,
+          precio: parseFloat(p.price as string),
+        })),
+        condicionesPago: {
+          idUsuario: data!.user.id,
+          nota: values.grade,
+          diasCredito: parseInt(values.creditDays),
+          fechaInicio: format(values.startDate, "yyyy-MM-dd"),
+          fechaFin: format(values.endDate, "yyyy-MM-dd"),
+        },
+      },
+    });
+  };
 
   const innerDivCn: ClassNameValue =
     "grid grid-cols-2 justify-around items-center px-4 gap-16 w-full";
@@ -78,22 +133,19 @@ export default function NewSupplier() {
               <Button>Guardar Productos</Button>
             </Info>
             <div className="flex flex-wrap gap-4">
-              <ProductCard
-                info={{
-                  name: "Croquetas Premium DogFood",
-                  brand: "DogFood Brand",
-                  price: 25,
-                  inStock: true,
-                }}
-              />
-              <ProductCard
-                info={{
-                  name: "Plush Cat Toy",
-                  brand: "CatToys Inc.",
-                  price: 15,
-                  inStock: true,
-                }}
-              />
+              {form
+                .getValues("products")
+                .map((p: Record<string, unknown>, idx: number) => (
+                  <ProductCard
+                    key={idx}
+                    info={{
+                      name: p.name as string,
+                      brand: "General",
+                      price: p.price as number,
+                      inStock: true,
+                    }}
+                  />
+                ))}
             </div>
           </div>
           <NewProduct
@@ -139,9 +191,7 @@ export default function NewSupplier() {
             <Button variant={"outline"} onClick={() => setStep(1)}>
               Volver a Revisar
             </Button>
-            <Button onClick={() => console.log(form.getValues())}>
-              Finalizar
-            </Button>
+            <Button onClick={handleSubmit}>Finalizar</Button>
           </Info>
           <div className={innerDivCn}>
             <Info title="Revisión Final" />
@@ -158,9 +208,12 @@ const generalInfoFields: FieldConfigs = {
     label: "Nombre",
     placeholder: "Ingrese el nombre del proveedor",
   },
-  descrition: {
-    label: "Descripción",
-    placeholder: "Ingrese una breve descripción",
+  nit: {
+    label: "NIT",
+    placeholder: "Ingrese el NIT del proveedor",
+    ztype: z
+      .string()
+      .regex(/\b[0-9]{10}\b/, "El nit debe contener exactamente 10 dígitos."),
   },
   category: {
     label: "Categoría",
@@ -170,6 +223,12 @@ const generalInfoFields: FieldConfigs = {
   deliveryTime: {
     label: "Tiempo de Entrega",
     placeholder: "Ingrese el tiempo de entrega (días)",
+    ztype: z.coerce.number().positive(),
+  },
+  eandDate: {
+    label: "Fecha límite",
+    type: "date",
+    ztype: z.coerce.date(),
   },
 };
 
@@ -181,6 +240,8 @@ const contactInfo: FieldConfigs = {
   email: {
     label: "Email",
     placeholder: "Ingrese el correo electrónico",
+    type: "email",
+    ztype: z.string().email(),
   },
   socials: {
     label: "Redes Sociales",
@@ -193,20 +254,24 @@ const contactInfo: FieldConfigs = {
 };
 
 const paymentConditions: FieldConfigs = {
-  paymentDeadline: {
-    label: "Plazo de Pago",
-    placeholder: "Ingrese el plazo (días)",
+  creditDays: {
+    label: "Días de crédito",
+    type: "number",
+    ztype: z.coerce.number().positive(),
   },
-  paymentMethod: {
-    label: "Método de Pago",
-    placeholder: "Seleccione el método de pago",
+  startDate: {
+    label: "Fecha de inicio",
+    type: "date",
+    ztype: z.coerce.date(),
   },
-  paymentPenalty: {
-    label: "Penalización",
-    placeholder: "Ingrese la penalización por retraso (si aplica)",
+  endDate: {
+    label: "Fecha límite",
+    type: "date",
+    ztype: z.coerce.date(),
   },
-  returnPolicies: {
-    label: "Políticas de Devolución",
-    placeholder: "Ingrese las políticas de devolución",
+  grade: {
+    label: "Nota",
+    type: "number",
+    ztype: z.coerce.number(),
   },
 };

@@ -14,6 +14,7 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 import { HTMLInputTypeAttribute } from "react";
+import { DatePicker } from "./DatePicker";
 
 export interface InputFieldProps {
   id: string;
@@ -38,12 +39,16 @@ export function InputField({
     <FormItem className={cn("flex flex-col gap-1")}>
       <FormLabel htmlFor={id}>{label}</FormLabel>
       <FormControl>
-        <Input
-          id={id}
-          placeholder={placeholder}
-          className="bg-white"
-          {...props}
-        />
+        {props.type === "date" ? (
+          <DatePicker {...props} />
+        ) : (
+          <Input
+            id={id}
+            placeholder={placeholder}
+            className="bg-white"
+            {...props}
+          />
+        )}
       </FormControl>
       <AnimatePresence>
         {state.error && (

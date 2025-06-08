@@ -1,0 +1,35 @@
+mutation NewSupplier(
+  $direccion: String = ""
+  $email: String = ""
+  $idUsuarioCreador: ID = ""
+  $nit: String = ""
+  $nombre: String = ""
+  $telefono: String = ""
+  $productos: [ProductoInput!] = {
+    codigo: ""
+    nombre: ""
+    descripcion: ""
+    precio: 1.5
+  }
+  $condicionesPago: [CondicionPagoInput!] = {
+    diasCredito: 10
+    fechaInicio: ""
+    fechaFin: ""
+    idUsuario: ""
+  }
+) {
+  createProveedor(
+    input: {
+      nombre: $nombre
+      nit: $nit
+      telefono: $telefono
+      idUsuarioCreador: $idUsuarioCreador
+      direccion: $direccion
+      email: $email
+      productos: $productos
+      condicionesPago: $condicionesPago
+    }
+  ) {
+    idProveedor
+  }
+}

@@ -13,9 +13,12 @@ export default function RecoverPassword() {
   const sendRecoveryEmail = () => {
     setSending(true);
     axios
-      .post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/password/request-reset`, {
-        email,
-      })
+      .post(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}:8081/password/request-reset`,
+        {
+          email,
+        },
+      )
       .then((res) => {
         if (res.status == HttpStatusCode.Ok) {
           toast.info("Email envíado", { description: res.data.message });

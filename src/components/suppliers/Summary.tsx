@@ -1,9 +1,10 @@
 import { Separator } from "../ui/separator";
 import { FlexCol } from "../common/FlexCol";
 import { SummaryItem } from "./SummaryItem";
+import { format } from "date-fns";
 
 // TODO: define proper type for all info
-export function Summary({ info }: { info: Record<string, string> }) {
+export function Summary({ info }: { info: Record<string, any> }) {
   return (
     <ul className="flex flex-col">
       <SummaryItem icon="📝">
@@ -42,8 +43,8 @@ export function Summary({ info }: { info: Record<string, string> }) {
       <SummaryItem icon="💳">
         <FlexCol>
           <span className="font-bold">Condiciones de Pago</span>
-          <span>Fecha de inicio: {info.startDate}</span>
-          <span>Fecha límite: {info.endDate}</span>
+          <span>Fecha de inicio: {format(info.startDate, "PPP")}</span>
+          <span>Fecha límite: {format(info.endDate, "PPP")}</span>
         </FlexCol>
         <FlexCol right>
           <span>Días crédito: {info.creditDays}</span>

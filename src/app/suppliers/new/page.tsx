@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useNewSupplierMutation } from "@/lib/graphql/codegen";
 import { createDefaultValues, createSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
@@ -85,8 +86,8 @@ export default function NewSupplier() {
           idUsuario: data!.user.id,
           nota: values.grade,
           diasCredito: parseInt(values.creditDays),
-          fechaInicio: values.startDate,
-          fechaFin: values.endDate,
+          fechaInicio: format(values.startDate, "yyyy-MM-dd"),
+          fechaFin: format(values.endDate, "yyyy-MM-dd"),
         },
       },
     });
@@ -224,6 +225,11 @@ const generalInfoFields: FieldConfigs = {
     placeholder: "Ingrese el tiempo de entrega (días)",
     ztype: z.coerce.number().positive(),
   },
+  eandDate: {
+    label: "Fecha límite",
+    type: "date",
+    ztype: z.coerce.date(),
+  },
 };
 
 const contactInfo: FieldConfigs = {
@@ -234,6 +240,8 @@ const contactInfo: FieldConfigs = {
   email: {
     label: "Email",
     placeholder: "Ingrese el correo electrónico",
+    type: "email",
+    ztype: z.string().email(),
   },
   socials: {
     label: "Redes Sociales",
@@ -251,12 +259,15 @@ const paymentConditions: FieldConfigs = {
     type: "number",
     ztype: z.coerce.number().positive(),
   },
-  // TODO: change to a date picker
   startDate: {
     label: "Fecha de inicio",
+    type: "date",
+    ztype: z.coerce.date(),
   },
   endDate: {
     label: "Fecha límite",
+    type: "date",
+    ztype: z.coerce.date(),
   },
   grade: {
     label: "Nota",

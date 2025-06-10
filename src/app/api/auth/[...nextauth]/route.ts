@@ -1,11 +1,11 @@
-import { ApolloClient, ApolloError, gql, InMemoryCache } from "@apollo/client";
+import { ApolloClient, ApolloError, InMemoryCache } from "@apollo/client";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 import { GetUserIdDocument, LoginDocument } from "@/lib/graphql/codegen";
 
 const loginClient = new ApolloClient({
-  uri: `${process.env.BACKEND_URL}:8081/graphql`,
+  uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/graphql`,
   cache: new InMemoryCache(),
 });
 

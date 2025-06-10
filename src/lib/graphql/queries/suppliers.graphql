@@ -1,0 +1,28 @@
+query GetSuppliers {
+  getProveedores {
+    email
+    nit
+    direccion
+    activo
+    condicionesPago {
+      diasCredito
+      fechaFin
+      fechaInicio
+      idCondicionPago
+      idUsuario
+      nota
+    }
+    fechaRegistro
+    idUsuarioCreador
+    idProveedor
+    nombre
+    productos {
+      codigo
+      descripcion
+      idProducto
+      nombre
+      precio
+    }
+    telefono
+  }
+}

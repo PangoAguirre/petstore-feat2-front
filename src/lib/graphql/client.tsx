@@ -12,30 +12,16 @@ import { toast } from "sonner";
 import { setContext } from "@apollo/client/link/context";
 import { getSession } from "next-auth/react";
 
-const handleGraphQLError = ({ message, path }: GraphQLFormattedError) => {
-  if (
-    path?.includes("registerUser") &&
-    message.includes("Ya existe") &&
-    message.includes("correo")
-  ) {
-    toast.error("Correo en uso", {
-      description: "El correo electrónico ya está asociado a otra cuenta.",
-    });
-    return true;
-  }
-
-  return false;
-};
-
 const serviceLinks = {
   auth: new HttpLink({
-    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}:8081/graphql`,
+    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/graphql`,
   }),
   suppliers: new HttpLink({
-    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}:8082/graphql`,
+    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/supplier/graphql`,
   }),
 };
 
+// use on or another based on serviceName from context
 const httpLink = new ApolloLink((op, fw) => {
   const { serviceName } = op.getContext();
   if (serviceName in serviceLinks) {
@@ -49,6 +35,7 @@ const httpLink = new ApolloLink((op, fw) => {
   return serviceLinks.auth.request(op, fw);
 });
 
+// set Bearer on every req
 const authLink = setContext(async (_, { headers }) => {
   const session = await getSession();
   return {
@@ -59,6 +46,9 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
+// --------------------------------------------------------
+// -------------------- Error handling --------------------
+// --------------------------------------------------------
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
     graphQLErrors.forEach((err) => {
@@ -77,6 +67,21 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     console.error(`[Network error]: ${networkError}`);
   }
 });
+
+const handleGraphQLError = ({ message, path }: GraphQLFormattedError) => {
+  if (
+    path?.includes("registerUser") &&
+    message.includes("Ya existe") &&
+    message.includes("correo")
+  ) {
+    toast.error("Correo en uso", {
+      description: "El correo electrónico ya está asociado a otra cuenta.",
+    });
+    return true;
+  }
+
+  return false;
+};
 
 export const client = new ApolloClient({
   link: from([errorLink, authLink, httpLink]),

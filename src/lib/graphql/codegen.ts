@@ -42,7 +42,7 @@ export type Mutation = {
   actualizarProducto?: Maybe<Producto>;
   agregarProducto?: Maybe<Producto>;
   crearCondicionPago?: Maybe<CondicionPago>;
-  /** NUEVA MUTATION: Crear condiciÃ³n asociada a proveedor */
+  /** NUEVA MUTATION: Crear condición asociada a proveedor */
   crearCondicionPagoParaProveedor?: Maybe<CondicionPago>;
   createProveedor?: Maybe<Proveedor>;
   deleteProveedor?: Maybe<Scalars['Boolean']['output']>;
@@ -235,6 +235,11 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login?: string | null };
 
+export type GetSuppliersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSuppliersQuery = { __typename?: 'Query', getProveedores?: Array<{ __typename?: 'Proveedor', email?: string | null, nit?: string | null, direccion?: string | null, activo?: boolean | null, fechaRegistro?: string | null, idUsuarioCreador?: string | null, idProveedor: string, nombre?: string | null, telefono?: string | null, condicionesPago?: Array<{ __typename?: 'CondicionPago', diasCredito?: number | null, fechaFin?: string | null, fechaInicio?: string | null, idCondicionPago: string, idUsuario?: string | null, nota?: string | null } | null> | null, productos?: Array<{ __typename?: 'Producto', codigo: string, descripcion: string, idProducto: string, nombre: string, precio: number } | null> | null } | null> | null };
+
 export type GetUserIdQueryVariables = Exact<{
   email: Scalars['String']['input'];
 }>;
@@ -352,6 +357,68 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const GetSuppliersDocument = gql`
+    query GetSuppliers {
+  getProveedores {
+    email
+    nit
+    direccion
+    activo
+    condicionesPago {
+      diasCredito
+      fechaFin
+      fechaInicio
+      idCondicionPago
+      idUsuario
+      nota
+    }
+    fechaRegistro
+    idUsuarioCreador
+    idProveedor
+    nombre
+    productos {
+      codigo
+      descripcion
+      idProducto
+      nombre
+      precio
+    }
+    telefono
+  }
+}
+    `;
+
+/**
+ * __useGetSuppliersQuery__
+ *
+ * To run a query within a React component, call `useGetSuppliersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSuppliersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSuppliersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSuppliersQuery(baseOptions?: Apollo.QueryHookOptions<GetSuppliersQuery, GetSuppliersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSuppliersQuery, GetSuppliersQueryVariables>(GetSuppliersDocument, options);
+      }
+export function useGetSuppliersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSuppliersQuery, GetSuppliersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSuppliersQuery, GetSuppliersQueryVariables>(GetSuppliersDocument, options);
+        }
+export function useGetSuppliersSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSuppliersQuery, GetSuppliersQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSuppliersQuery, GetSuppliersQueryVariables>(GetSuppliersDocument, options);
+        }
+export type GetSuppliersQueryHookResult = ReturnType<typeof useGetSuppliersQuery>;
+export type GetSuppliersLazyQueryHookResult = ReturnType<typeof useGetSuppliersLazyQuery>;
+export type GetSuppliersSuspenseQueryHookResult = ReturnType<typeof useGetSuppliersSuspenseQuery>;
+export type GetSuppliersQueryResult = Apollo.QueryResult<GetSuppliersQuery, GetSuppliersQueryVariables>;
 export const GetUserIdDocument = gql`
     query GetUserId($email: String!) {
   getUserByEmail(email: $email) {

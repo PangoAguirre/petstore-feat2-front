@@ -33,7 +33,7 @@ export const config = {
     "/signup",
     "/recover-password",
     "/dashboard",
-    "/suppliers/:path",
+    "/suppliers/:path?",
     "/admin/new-supplier-manager",
   ],
 };

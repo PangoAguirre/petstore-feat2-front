@@ -44,7 +44,9 @@ export default function Login() {
                 if (!res?.ok) {
                   toast.error(res?.error);
                 } else {
-                  router.push("/dashboard");
+                  setTimeout(() => {
+                    router.push("/dashboard");
+                  }, 200);
                 }
               })
               .catch((err) => console.error(err))

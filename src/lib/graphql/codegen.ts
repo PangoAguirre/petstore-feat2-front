@@ -19,7 +19,6 @@ export type Scalars = {
 
 export type CondicionPago = {
   __typename?: 'CondicionPago';
-  /**  <-- este campo estaba faltando */
   diasCredito?: Maybe<Scalars['Int']['output']>;
   fechaFin?: Maybe<Scalars['String']['output']>;
   fechaInicio?: Maybe<Scalars['String']['output']>;
@@ -42,7 +41,6 @@ export type Mutation = {
   actualizarProducto?: Maybe<Producto>;
   agregarProducto?: Maybe<Producto>;
   crearCondicionPago?: Maybe<CondicionPago>;
-  /** NUEVA MUTATION: Crear condición asociada a proveedor */
   crearCondicionPagoParaProveedor?: Maybe<CondicionPago>;
   createProveedor?: Maybe<Proveedor>;
   deleteProveedor?: Maybe<Scalars['Boolean']['output']>;
@@ -155,7 +153,6 @@ export type Proveedor = {
   idProveedor: Scalars['ID']['output'];
   idUsuarioCreador?: Maybe<Scalars['ID']['output']>;
   nit?: Maybe<Scalars['String']['output']>;
-  /**  <-- este campo estaba faltando */
   nombre?: Maybe<Scalars['String']['output']>;
   productos?: Maybe<Array<Maybe<Producto>>>;
   telefono?: Maybe<Scalars['String']['output']>;
@@ -238,7 +235,7 @@ export type LoginMutation = { __typename?: 'Mutation', login?: string | null };
 export type GetSuppliersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSuppliersQuery = { __typename?: 'Query', getProveedores?: Array<{ __typename?: 'Proveedor', email?: string | null, nit?: string | null, direccion?: string | null, activo?: boolean | null, fechaRegistro?: string | null, idUsuarioCreador?: string | null, idProveedor: string, nombre?: string | null, telefono?: string | null, condicionesPago?: Array<{ __typename?: 'CondicionPago', diasCredito?: number | null, fechaFin?: string | null, fechaInicio?: string | null, idCondicionPago: string, idUsuario?: string | null, nota?: string | null } | null> | null, productos?: Array<{ __typename?: 'Producto', codigo: string, descripcion: string, idProducto: string, nombre: string, precio: number } | null> | null } | null> | null };
+export type GetSuppliersQuery = { __typename?: 'Query', getProveedores?: Array<{ __typename?: 'Proveedor', activo?: boolean | null, nombre?: string | null, email?: string | null, idProveedor: string, condicionesPago?: Array<{ __typename?: 'CondicionPago', diasCredito?: number | null } | null> | null } | null> | null };
 
 export type GetUserIdQueryVariables = Exact<{
   email: Scalars['String']['input'];
@@ -360,30 +357,13 @@ export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, Log
 export const GetSuppliersDocument = gql`
     query GetSuppliers {
   getProveedores {
-    email
-    nit
-    direccion
     activo
+    nombre
+    email
     condicionesPago {
       diasCredito
-      fechaFin
-      fechaInicio
-      idCondicionPago
-      idUsuario
-      nota
     }
-    fechaRegistro
-    idUsuarioCreador
     idProveedor
-    nombre
-    productos {
-      codigo
-      descripcion
-      idProducto
-      nombre
-      precio
-    }
-    telefono
   }
 }
     `;

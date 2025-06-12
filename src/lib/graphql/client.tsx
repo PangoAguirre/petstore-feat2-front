@@ -17,7 +17,10 @@ const serviceLinks = {
     uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/graphql`,
   }),
   suppliers: new HttpLink({
-    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/supplier/graphql`,
+    uri:
+      process.env.NODE_ENV === "development"
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql` // to test on local (port is 8082)
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}supplier/graphql`,
   }),
 };
 

@@ -12,10 +12,10 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { DialogHeader } from "../ui/dialog";
-import { FieldConfigs, PartialForm } from "../common/PartialForm";
+import { PartialForm } from "../common/PartialForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createDefaultValues, createSchema } from "@/lib/utils";
-import { z } from "zod";
+import { productFields } from "@/lib/forms/suppliers";
 
 export function NewProduct({
   onSubmit,
@@ -29,8 +29,8 @@ export function NewProduct({
   onOpenChange: (open: boolean) => void;
 }) {
   const form = useForm({
-    defaultValues: createDefaultValues(fields),
-    resolver: zodResolver(createSchema(fields)),
+    defaultValues: createDefaultValues(productFields),
+    resolver: zodResolver(createSchema(productFields)),
     mode: "onChange",
   });
 
@@ -51,7 +51,7 @@ export function NewProduct({
               form.reset();
               onSubmit(data);
             }}
-            fields={fields}
+            fields={productFields}
           >
             <div className="flex gap-4">
               <Button
@@ -72,14 +72,3 @@ export function NewProduct({
     </Dialog>
   );
 }
-
-const fields: FieldConfigs = {
-  code: { label: "Código" },
-  name: { label: "Nombre" },
-  description: { label: "Descripción" },
-  price: {
-    label: "Precio",
-    type: "number",
-    ztype: z.coerce.number().positive(),
-  },
-};

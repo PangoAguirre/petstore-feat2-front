@@ -1,15 +1,15 @@
 "use client";
 
 import { Info } from "@/components/common/Info";
-import { FieldConfigs, PartialForm } from "@/components/common/PartialForm";
+import { PartialForm } from "@/components/common/PartialForm";
+import { signupFields } from "@/lib/forms/auth";
 import { useSignUpMutation } from "@/lib/graphql/codegen";
-import { createSchema, pwReqMessage, pwRequirements } from "@/lib/utils";
+import { createSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "motion/react";
 import { useRouter } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 export default function SignUp() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function SignUp() {
       passwordAgain: "",
     },
     resolver: zodResolver(
-      createSchema(fields).refine(
+      createSchema(signupFields).refine(
         (data) => data.password == data.passwordAgain,
         { path: ["passwordAgain"], message: "Las contraseñas no coinciden" },
       ),
@@ -55,7 +55,7 @@ export default function SignUp() {
               },
             });
           }}
-          fields={fields}
+          fields={signupFields}
           btnText="Registrarse"
           leftInfo={
             <Info
@@ -68,29 +68,3 @@ export default function SignUp() {
     </motion.div>
   );
 }
-
-const fields: FieldConfigs = {
-  fullName: {
-    label: "Nombre completo",
-    placeholder: "Ingrese su nombre completo",
-  },
-  email: {
-    label: "Correo electrónico",
-    placeholder: "ejemplo@correo.com",
-    ztype: z.string().email({ message: "Ingrese un email válido" }),
-  },
-  password: {
-    label: "Contraseña",
-    placeholder: "Ingrese su contraseña",
-    type: "password",
-    ztype: z.string().refine(pwRequirements, {
-      message: pwReqMessage,
-    }),
-  },
-  passwordAgain: {
-    label: "Confirmación de contraseña",
-    placeholder: "Repita su contraseña",
-    type: "password",
-    ztype: z.string().nonempty({ message: "Requerido" }),
-  },
-};

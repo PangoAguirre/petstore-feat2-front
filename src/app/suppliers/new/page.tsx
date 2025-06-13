@@ -1,12 +1,17 @@
 "use client";
 
 import { Info } from "@/components/common/Info";
-import { FieldConfigs, PartialForm } from "@/components/common/PartialForm";
+import { PartialForm } from "@/components/common/PartialForm";
 import { NewProduct } from "@/components/suppliers/NewProduct";
 import { ProductCard } from "@/components/suppliers/ProductCard";
 import { StepScreen } from "@/components/suppliers/StepScreen";
 import { Summary } from "@/components/suppliers/Summary";
 import { Button } from "@/components/ui/button";
+import {
+  contactInfoFields,
+  generalInfoFields,
+  paymentConditionsFields,
+} from "@/lib/forms/suppliers";
 import { useNewSupplierMutation } from "@/lib/graphql/codegen";
 import { createDefaultValues, createSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,7 +21,6 @@ import { useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ClassNameValue } from "tailwind-merge";
-import { z } from "zod";
 
 export default function NewSupplier() {
   const [createSupplier, {}] = useNewSupplierMutation({
@@ -45,8 +49,8 @@ export default function NewSupplier() {
   const [showProductForm, setShowProductForm] = useState(false);
   const allFields = {
     ...generalInfoFields,
-    ...contactInfo,
-    ...paymentConditions,
+    ...contactInfoFields,
+    ...paymentConditionsFields,
   };
 
   const form = useForm({
@@ -167,7 +171,7 @@ export default function NewSupplier() {
           <PartialForm
             leftInfo={<Info title="Contacto" />}
             onAction={nextStep}
-            fields={contactInfo}
+            fields={contactInfoFields}
           />
         </StepScreen>
 
@@ -179,7 +183,7 @@ export default function NewSupplier() {
           <PartialForm
             leftInfo={<Info title="Condiciones de Pago" />}
             onAction={nextStep}
-            fields={paymentConditions}
+            fields={paymentConditionsFields}
           />
         </StepScreen>
 
@@ -202,76 +206,3 @@ export default function NewSupplier() {
     </FormProvider>
   );
 }
-
-const generalInfoFields: FieldConfigs = {
-  name: {
-    label: "Nombre",
-    placeholder: "Ingrese el nombre del proveedor",
-  },
-  nit: {
-    label: "NIT",
-    placeholder: "Ingrese el NIT del proveedor",
-    ztype: z
-      .string()
-      .regex(/\b[0-9]{10}\b/, "El nit debe contener exactamente 10 dígitos."),
-  },
-  category: {
-    label: "Categoría",
-    hint: "Ej. Alimentos, Juguetes, etc.",
-    placeholder: "Ingrese la categoría",
-  },
-  deliveryTime: {
-    label: "Tiempo de Entrega",
-    placeholder: "Ingrese el tiempo de entrega (días)",
-    ztype: z.coerce.number().positive(),
-  },
-  eandDate: {
-    label: "Fecha límite",
-    type: "date",
-    ztype: z.coerce.date(),
-  },
-};
-
-const contactInfo: FieldConfigs = {
-  phone: {
-    label: "Teléfono",
-    placeholder: "Ingrese el número de teléfono",
-  },
-  email: {
-    label: "Email",
-    placeholder: "Ingrese el correo electrónico",
-    type: "email",
-    ztype: z.string().email(),
-  },
-  socials: {
-    label: "Redes Sociales",
-    placeholder: "Enlace a las redes sociales",
-  },
-  address: {
-    label: "Dirección Física",
-    placeholder: "Ingrese la dirección completa",
-  },
-};
-
-const paymentConditions: FieldConfigs = {
-  creditDays: {
-    label: "Días de crédito",
-    type: "number",
-    ztype: z.coerce.number().positive(),
-  },
-  startDate: {
-    label: "Fecha de inicio",
-    type: "date",
-    ztype: z.coerce.date(),
-  },
-  endDate: {
-    label: "Fecha límite",
-    type: "date",
-    ztype: z.coerce.date(),
-  },
-  grade: {
-    label: "Nota",
-    type: "number",
-    ztype: z.coerce.number(),
-  },
-};

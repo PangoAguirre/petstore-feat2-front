@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 
 export default function Suppliers() {
   const { data, loading, error } = useGetSuppliersQuery({
+    fetchPolicy: "no-cache",
     context: { serviceName: "suppliers" },
   });
 
@@ -56,24 +57,26 @@ export default function Suppliers() {
             )}
             {!loading &&
               !error &&
-              data?.getProveedores?.map((p, idx) => {
-                if (!p) return null;
+              data?.getProveedores
+                ?.filter((p) => p?.activo === true)
+                .map((p, idx) => {
+                  if (!p) return null;
 
-                const days =
-                  p.condicionesPago && p.condicionesPago.length > 0
-                    ? p?.condicionesPago[0]?.diasCredito
-                    : 0;
+                  const days =
+                    p.condicionesPago && p.condicionesPago.length > 0
+                      ? p?.condicionesPago[0]?.diasCredito
+                      : 0;
 
-                return (
-                  <SupplierCard
-                    key={idx}
-                    id={p.idProveedor}
-                    supplier={p.nombre ?? "Noc"}
-                    days={`${days} días`}
-                    active={p.activo ?? false}
-                  />
-                );
-              })}
+                  return (
+                    <SupplierCard
+                      key={idx}
+                      id={p.idProveedor}
+                      supplier={p.nombre ?? "Noc"}
+                      days={`${days} días`}
+                      active={p.activo ?? false}
+                    />
+                  );
+                })}
           </div>
         </div>
       </div>

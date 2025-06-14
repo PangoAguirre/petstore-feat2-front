@@ -3,9 +3,10 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 import { GetUserIdDocument, LoginDocument } from "@/lib/graphql/codegen";
+import { serviceLinks } from "@/lib/graphql/apolloLinks";
 
 const loginClient = new ApolloClient({
-  uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/graphql`,
+  link: serviceLinks.auth,
   cache: new InMemoryCache(),
 });
 

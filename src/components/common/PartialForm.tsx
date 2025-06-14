@@ -5,6 +5,7 @@ import { z } from "zod";
 import { FormField } from "../ui/form";
 import { PropsWithChildren } from "react";
 import { LoaderCircle } from "lucide-react";
+import { ValuesFromConfig } from "@/lib/utils";
 
 export interface FieldConfigs {
   [id: string]: Omit<InputFieldProps, "id"> & { ztype?: z.ZodType };
@@ -15,14 +16,14 @@ export interface PartialFormProps<T extends FieldConfigs>
   fields: T;
   btnText?: string;
   leftInfo?: React.ReactNode;
-  onAction?: SubmitHandler<Record<keyof T, string>>;
+  onAction?: SubmitHandler<ValuesFromConfig<T>>;
   loading?: boolean;
 }
 
 export function PartialForm<T extends FieldConfigs>(
   props: PartialFormProps<T>,
 ) {
-  type FormValues = Record<keyof T, string>;
+  type FormValues = ValuesFromConfig<T>;
   const { control, trigger, getValues } = useFormContext<FormValues>();
 
   return (

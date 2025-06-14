@@ -2,7 +2,7 @@
 
 import { SingleForm } from "@/components/common/SingleForm";
 import { ProductsCatalog } from "@/components/products/ProductsCatalog";
-import { Button } from "@/components/ui/button";
+import { SupplierDeletion } from "@/components/suppliers/SupplierDeletion";
 import { Separator } from "@/components/ui/separator";
 import {
   contactInfoFields,
@@ -16,6 +16,7 @@ import {
   useUpdateSupplierContactMutation,
   useUpdateSupplierGeneralInfoMutation,
 } from "@/lib/graphql/codegen";
+import { ValuesFromConfig } from "@/lib/utils";
 import { ApolloError } from "@apollo/client";
 import { Loader2Icon } from "lucide-react";
 import { motion } from "motion/react";
@@ -26,11 +27,13 @@ import { toast } from "sonner";
 
 export default function SupplierDetails() {
   const { id } = useParams();
+  const { data: userData } = useSession();
+
   const { data, loading, refetch } = useGetSupplierByIdQuery({
     context: { serviceName: "suppliers" },
     variables: { id: id!.toString() },
   });
-  const { data: userData } = useSession();
+
   const [saveGeneralInfo, { loading: savingGeneralInfo }] =
     useUpdateSupplierGeneralInfoMutation({
       context: { serviceName: "suppliers" },
@@ -66,18 +69,19 @@ export default function SupplierDetails() {
   const onSuccess = () => toast.success("Datos guardados exitosamente!");
   const onError = (err: string) =>
     toast.error("Error al intentar guardar los datos.", { description: err });
-  const handleParcialSave = (
+  const handlePartialSave = (
     what: "general" | "contact" | "conditions",
-    values: FieldValues,
+    vals: FieldValues,
   ) => {
+    let values;
     switch (what) {
       case "general":
+        values = vals as ValuesFromConfig<typeof generalInfoFields>;
         saveGeneralInfo({
           variables: {
             id: id!.toString(),
             nit: values.nit,
             nombre: values.name,
-            telefono: values.phone,
           },
         })
           .then(() => {
@@ -90,6 +94,7 @@ export default function SupplierDetails() {
         break;
 
       case "contact":
+        values = vals as ValuesFromConfig<typeof contactInfoFields>;
         saveContact({
           variables: {
             id: id!.toString(),
@@ -105,6 +110,7 @@ export default function SupplierDetails() {
         break;
 
       case "conditions":
+        values = vals as ValuesFromConfig<typeof paymentConditionsFields>;
         if (
           data.getProveedorById?.condicionesPago &&
           data.getProveedorById?.condicionesPago[0]
@@ -113,7 +119,7 @@ export default function SupplierDetails() {
             variables: {
               idCondicionPago:
                 data.getProveedorById?.condicionesPago[0]?.idCondicionPago,
-              diasCredito: values.creditDays,
+              diasCredito: parseInt(values.creditDays),
               fechaInicio: values.startDate,
               fechaFin: values.endDate,
               nota: values.grade,
@@ -129,7 +135,7 @@ export default function SupplierDetails() {
               idProveedor: id!.toString(),
               input: {
                 idUsuario: userId,
-                diasCredito: values.creditDays,
+                diasCredito: parseInt(values.creditDays),
                 fechaInicio: values.startDate,
                 fechaFin: values.endDate,
                 nota: values.grade,
@@ -161,62 +167,76 @@ export default function SupplierDetails() {
         <h1 className="w-[60%] text-left font-bold text-2xl">
           {data?.getProveedorById?.nombre}
         </h1>
-        <Button variant={"destructive"}>Eliminar Proveedor</Button>
+        {data.getProveedorById.activo ? (
+          <SupplierDeletion
+            id={id!.toString()}
+            name={data.getProveedorById.nombre ?? "Sin nombre"}
+          />
+        ) : (
+          <span className="text-destructive">
+            Este proveedor se ha desactivado
+          </span>
+        )}
       </div>
-      <Separator />
-      <SingleForm
-        fields={generalInfoFields}
-        values={{
-          name: supplierInfo.nombre,
-          nit: supplierInfo.nit,
-        }}
-        info={{
-          title: "Datos Generales",
-          desc: "Información básica sobre el proveedor.",
-        }}
-        btnText="Guardar"
-        loading={savingGeneralInfo}
-        onAction={(data) => handleParcialSave("general", data)}
-      />
-      <Separator />
-      <SingleForm
-        fields={contactInfoFields}
-        values={{
-          phone: supplierInfo.telefono,
-          email: supplierInfo.email,
-          address: supplierInfo.direccion,
-        }}
-        info={{
-          title: "Datos de Contacto",
-          desc: "Información de contacto del proveedor.",
-        }}
-        btnText="Guardar"
-        loading={savingContact}
-        onAction={(data) => handleParcialSave("contact", data)}
-      />
-      <Separator />
-      <SingleForm
-        fields={paymentConditionsFields}
-        values={
-          supplierInfo.condicionesPago
-            ? {
-                creditDays: supplierInfo.condicionesPago[0]?.diasCredito ?? 0,
-                startDate: supplierInfo.condicionesPago[0]?.fechaInicio,
-                endDate: supplierInfo.condicionesPago[0]?.fechaFin,
-                grade: supplierInfo.condicionesPago[0]?.nota,
-              }
-            : {}
-        }
-        info={{
-          title: "Condiciones de Pago",
-          desc: "Detalles sobre las condiciones de pago.",
-        }}
-        btnText="Guardar"
-        loading={savingConditions || creatingCondition}
-        onAction={(data) => handleParcialSave("conditions", data)}
-      />
-      <Separator />
-      <ProductsCatalog supplierId={id!.toString()} />
+      {data.getProveedorById.activo && (
+        <>
+          <Separator />
+          <SingleForm
+            fields={generalInfoFields}
+            values={{
+              name: supplierInfo.nombre,
+              nit: supplierInfo.nit,
+            }}
+            info={{
+              title: "Datos Generales",
+              desc: "Información básica sobre el proveedor.",
+            }}
+            btnText="Guardar"
+            loading={savingGeneralInfo}
+            onAction={(data) => handlePartialSave("general", data)}
+          />
+          <Separator />
+          <SingleForm
+            fields={contactInfoFields}
+            values={{
+              phone: supplierInfo.telefono,
+              email: supplierInfo.email,
+              address: supplierInfo.direccion,
+            }}
+            info={{
+              title: "Datos de Contacto",
+              desc: "Información de contacto del proveedor.",
+            }}
+            btnText="Guardar"
+            loading={savingContact}
+            onAction={(data) => handlePartialSave("contact", data)}
+          />
+          <Separator />
+          <SingleForm
+            fields={paymentConditionsFields}
+            values={
+              supplierInfo.condicionesPago
+                ? {
+                    creditDays:
+                      supplierInfo.condicionesPago[0]?.diasCredito ?? 0,
+                    startDate: supplierInfo.condicionesPago[0]?.fechaInicio,
+                    endDate: supplierInfo.condicionesPago[0]?.fechaFin,
+                    grade: supplierInfo.condicionesPago[0]?.nota,
+                  }
+                : {}
+            }
+            info={{
+              title: "Condiciones de Pago",
+              desc: "Detalles sobre las condiciones de pago.",
+            }}
+            btnText="Guardar"
+            loading={savingConditions || creatingCondition}
+            onAction={(data) => handlePartialSave("conditions", data)}
+          />
+          <Separator />
+          <ProductsCatalog supplierId={id!.toString()} />
+        </>
+      )}
     </motion.div>
   );
 }

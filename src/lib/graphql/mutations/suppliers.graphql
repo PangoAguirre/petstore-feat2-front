@@ -34,13 +34,8 @@ mutation NewSupplier(
   }
 }
 
-mutation UpdateSupplierGeneralInfo(
-  $id: ID!
-  $nit: String
-  $nombre: String
-  $telefono: String
-) {
-  updateProveedor(id: $id, nit: $nit, nombre: $nombre, telefono: $telefono) {
+mutation UpdateSupplierGeneralInfo($id: ID!, $nit: String, $nombre: String) {
+  updateProveedor(id: $id, nit: $nit, nombre: $nombre) {
     idProveedor
   }
 }
@@ -83,4 +78,8 @@ mutation UpdatePaymentCondition(
   ) {
     diasCredito
   }
+}
+
+mutation DeleteSupplier($id: ID!) {
+  deleteProveedor(id: $id)
 }

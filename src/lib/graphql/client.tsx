@@ -1,31 +1,11 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-  HttpLink,
-  from,
-  ApolloLink,
-} from "@apollo/client";
+import { ApolloClient, InMemoryCache, from, ApolloLink } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { GraphQLFormattedError } from "graphql";
 import { ServerOffIcon } from "lucide-react";
 import { toast } from "sonner";
 import { setContext } from "@apollo/client/link/context";
 import { getSession } from "next-auth/react";
-
-const serviceLinks = {
-  auth: new HttpLink({
-    uri:
-      process.env.NODE_ENV === "development"
-        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}:8081/graphql` // to test on local
-        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/graphql`,
-  }),
-  suppliers: new HttpLink({
-    uri:
-      process.env.NODE_ENV === "development"
-        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}:8082/graphql` // to test on local
-        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/supplier/graphql`,
-  }),
-};
+import { serviceLinks } from "./apolloLinks";
 
 // use on or another based on serviceName from context
 const httpLink = new ApolloLink((op, fw) => {

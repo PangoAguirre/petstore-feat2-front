@@ -212,7 +212,7 @@ export default function SupplierDetails() {
           desc: "Detalles sobre las condiciones de pago.",
         }}
         btnText="Guardar"
-        loading={savingConditions}
+        loading={savingConditions || creatingCondition}
         onAction={(data) => handleParcialSave("conditions", data)}
       />
       <Separator />

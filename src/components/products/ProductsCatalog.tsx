@@ -56,7 +56,7 @@ export function ProductsCatalog({ supplierId }: ProductsCatalogProps) {
         })),
       );
     }
-  }, [data?.listarProductosPorProveedor]);
+  }, [data?.listarProductosPorProveedor, productsForm]);
 
   const newProducts = useMemo(() => {
     const oldProducts = new Set(

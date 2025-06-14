@@ -19,11 +19,11 @@ export const generalInfoFields: FieldConfigs = {
   //   hint: "Ej. Alimentos, Juguetes, etc.",
   //   placeholder: "Ingrese la categoría",
   // },
-  deliveryTime: {
-    label: "Tiempo de Entrega",
-    placeholder: "Ingrese el tiempo de entrega (días)",
-    ztype: z.coerce.number().positive(),
-  },
+  // deliveryTime: {
+  //   label: "Tiempo de Entrega",
+  //   placeholder: "Ingrese el tiempo de entrega (días)",
+  //   ztype: z.coerce.number().positive(),
+  // },
 };
 
 export const contactInfoFields: FieldConfigs = {
@@ -37,10 +37,10 @@ export const contactInfoFields: FieldConfigs = {
     type: "email",
     ztype: z.string().email(),
   },
-  socials: {
-    label: "Redes Sociales",
-    placeholder: "Enlace a las redes sociales",
-  },
+  // socials: {
+  //   label: "Redes Sociales",
+  //   placeholder: "Enlace a las redes sociales",
+  // },
   address: {
     label: "Dirección Física",
     placeholder: "Ingrese la dirección completa",

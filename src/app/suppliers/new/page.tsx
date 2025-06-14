@@ -2,8 +2,8 @@
 
 import { Info } from "@/components/common/Info";
 import { PartialForm } from "@/components/common/PartialForm";
-import { NewProduct } from "@/components/suppliers/NewProduct";
-import { ProductCard } from "@/components/suppliers/ProductCard";
+import { NewProduct } from "@/components/products/NewProduct";
+import { ProductCard } from "@/components/products/ProductCard";
 import { StepScreen } from "@/components/suppliers/StepScreen";
 import { Summary } from "@/components/suppliers/Summary";
 import { Button } from "@/components/ui/button";
@@ -143,10 +143,10 @@ export default function NewSupplier() {
                   <ProductCard
                     key={idx}
                     info={{
+                      code: p.code as string,
                       name: p.name as string,
-                      brand: "General",
+                      description: p.description as string,
                       price: p.price as number,
-                      inStock: true,
                     }}
                   />
                 ))}

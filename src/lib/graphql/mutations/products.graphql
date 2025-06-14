@@ -1,0 +1,17 @@
+mutation AddProduct(
+  $codigo: String!
+  $descripcion: String
+  $idProveedor: ID!
+  $nombre: String!
+  $precio: Float!
+) {
+  agregarProducto(
+    codigo: $codigo
+    idProveedor: $idProveedor
+    nombre: $nombre
+    precio: $precio
+    descripcion: $descripcion
+  ) {
+    codigo
+  }
+}

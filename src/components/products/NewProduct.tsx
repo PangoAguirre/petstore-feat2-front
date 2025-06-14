@@ -1,9 +1,4 @@
-import {
-  FieldValues,
-  FormProvider,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -12,22 +7,24 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { DialogHeader } from "../ui/dialog";
-import { PartialForm } from "../common/PartialForm";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createDefaultValues, createSchema } from "@/lib/utils";
 import { productFields } from "@/lib/forms/suppliers";
+import { SingleForm } from "../common/SingleForm";
+
+interface NewProductProps {
+  onSubmit: SubmitHandler<FieldValues>;
+  onCancel?: () => void;
+  open: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
 
 export function NewProduct({
   onSubmit,
   onCancel,
   open,
   onOpenChange,
-}: {
-  onSubmit: SubmitHandler<FieldValues>;
-  onCancel: () => void;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
+}: NewProductProps) {
   const form = useForm({
     defaultValues: createDefaultValues(productFields),
     resolver: zodResolver(createSchema(productFields)),
@@ -45,29 +42,30 @@ export function NewProduct({
             Completa los campos para asociar el Producto o servicio al proveedor
           </DialogDescription>
         </DialogHeader>
-        <FormProvider {...form}>
-          <PartialForm
-            onAction={(data) => {
-              form.reset();
-              onSubmit(data);
-            }}
-            fields={productFields}
-          >
-            <div className="flex gap-4">
-              <Button
-                variant={"outline"}
-                type="button"
-                onClick={onCancel}
-                className="w-fit py-5 px-12"
-              >
-                Cancelar
-              </Button>
-              <Button type="submit" className="w-fit py-5 px-12">
-                Agregar
-              </Button>
-            </div>
-          </PartialForm>
-        </FormProvider>
+        <SingleForm
+          onAction={(data) => {
+            form.reset();
+            onSubmit(data);
+          }}
+          fields={productFields}
+        >
+          <div className="flex gap-4">
+            <Button
+              variant={"outline"}
+              type="button"
+              onClick={() => {
+                if (onOpenChange) onOpenChange(false);
+                if (onCancel) onCancel();
+              }}
+              className="w-fit py-5 px-12"
+            >
+              Cancelar
+            </Button>
+            <Button type="submit" className="w-fit py-5 px-12">
+              Agregar
+            </Button>
+          </div>
+        </SingleForm>
       </DialogContent>
     </Dialog>
   );

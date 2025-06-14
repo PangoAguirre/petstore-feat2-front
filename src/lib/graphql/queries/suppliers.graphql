@@ -19,6 +19,7 @@ query GetSupplierById($id: ID!) {
     direccion
     email
     condicionesPago {
+      idCondicionPago
       diasCredito
       fechaInicio
       fechaFin

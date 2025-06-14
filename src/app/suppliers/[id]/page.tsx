@@ -1,7 +1,7 @@
 "use client";
 
-import NotFound from "@/app/not-found";
 import { SingleForm } from "@/components/common/SingleForm";
+import { ProductsCatalog } from "@/components/products/ProductsCatalog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -9,17 +9,44 @@ import {
   generalInfoFields,
   paymentConditionsFields,
 } from "@/lib/forms/suppliers";
-import { useGetSupplierByIdQuery } from "@/lib/graphql/codegen";
+import {
+  useGetSupplierByIdQuery,
+  useNewPaymentConditionMutation,
+  useUpdatePaymentConditionMutation,
+  useUpdateSupplierContactMutation,
+  useUpdateSupplierGeneralInfoMutation,
+} from "@/lib/graphql/codegen";
+import { ApolloError } from "@apollo/client";
 import { Loader2Icon } from "lucide-react";
 import { motion } from "motion/react";
+import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
+import { FieldValues } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function SupplierDetails() {
   const { id } = useParams();
-  const { data, loading } = useGetSupplierByIdQuery({
+  const { data, loading, refetch } = useGetSupplierByIdQuery({
     context: { serviceName: "suppliers" },
     variables: { id: id!.toString() },
   });
+  const { data: userData } = useSession();
+  const [saveGeneralInfo, { loading: savingGeneralInfo }] =
+    useUpdateSupplierGeneralInfoMutation({
+      context: { serviceName: "suppliers" },
+    });
+  const [saveContact, { loading: savingContact }] =
+    useUpdateSupplierContactMutation({
+      context: { serviceName: "suppliers" },
+    });
+  const [saveConditions, { loading: savingConditions }] =
+    useUpdatePaymentConditionMutation({
+      context: { serviceName: "suppliers" },
+    });
+  const [createCondition, { loading: creatingCondition }] =
+    useNewPaymentConditionMutation({
+      context: { serviceName: "suppliers" },
+    });
 
   if (!data || !data.getProveedorById) {
     return (
@@ -33,7 +60,92 @@ export default function SupplierDetails() {
     );
   }
 
+  const userId = userData?.user.id;
   const supplierInfo = data.getProveedorById;
+
+  const onSuccess = () => toast.success("Datos guardados exitosamente!");
+  const onError = (err: string) =>
+    toast.error("Error al intentar guardar los datos.", { description: err });
+  const handleParcialSave = (
+    what: "general" | "contact" | "conditions",
+    values: FieldValues,
+  ) => {
+    switch (what) {
+      case "general":
+        saveGeneralInfo({
+          variables: {
+            id: id!.toString(),
+            nit: values.nit,
+            nombre: values.name,
+            telefono: values.phone,
+          },
+        })
+          .then(() => {
+            refetch();
+            onSuccess();
+          })
+          .catch((err: ApolloError) => {
+            onError(err.message);
+          });
+        break;
+
+      case "contact":
+        saveContact({
+          variables: {
+            id: id!.toString(),
+            direccion: values.address,
+            email: values.email,
+            telefono: values.phone,
+          },
+        })
+          .then(() => onSuccess())
+          .catch((err: ApolloError) => {
+            onError(err.message);
+          });
+        break;
+
+      case "conditions":
+        if (
+          data.getProveedorById?.condicionesPago &&
+          data.getProveedorById?.condicionesPago[0]
+        ) {
+          saveConditions({
+            variables: {
+              idCondicionPago:
+                data.getProveedorById?.condicionesPago[0]?.idCondicionPago,
+              diasCredito: values.creditDays,
+              fechaInicio: values.startDate,
+              fechaFin: values.endDate,
+              nota: values.grade,
+            },
+          })
+            .then(() => onSuccess())
+            .catch((err: ApolloError) => {
+              onError(err.message);
+            });
+        } else if (userId) {
+          createCondition({
+            variables: {
+              idProveedor: id!.toString(),
+              input: {
+                idUsuario: userId,
+                diasCredito: values.creditDays,
+                fechaInicio: values.startDate,
+                fechaFin: values.endDate,
+                nota: values.grade,
+              },
+            },
+          });
+        } else {
+          console.log("User not logged in");
+        }
+        break;
+
+      default:
+        what satisfies never;
+        break;
+    }
+  };
 
   return (
     <motion.div
@@ -63,7 +175,8 @@ export default function SupplierDetails() {
           desc: "Información básica sobre el proveedor.",
         }}
         btnText="Guardar"
-        onAction={(data) => alert(JSON.stringify(data))}
+        loading={savingGeneralInfo}
+        onAction={(data) => handleParcialSave("general", data)}
       />
       <Separator />
       <SingleForm
@@ -78,7 +191,8 @@ export default function SupplierDetails() {
           desc: "Información de contacto del proveedor.",
         }}
         btnText="Guardar"
-        onAction={(data) => alert(JSON.stringify(data))}
+        loading={savingContact}
+        onAction={(data) => handleParcialSave("contact", data)}
       />
       <Separator />
       <SingleForm
@@ -98,8 +212,11 @@ export default function SupplierDetails() {
           desc: "Detalles sobre las condiciones de pago.",
         }}
         btnText="Guardar"
-        onAction={(data) => alert(JSON.stringify(data))}
+        loading={savingConditions}
+        onAction={(data) => handleParcialSave("conditions", data)}
       />
+      <Separator />
+      <ProductsCatalog supplierId={id!.toString()} />
     </motion.div>
   );
 }

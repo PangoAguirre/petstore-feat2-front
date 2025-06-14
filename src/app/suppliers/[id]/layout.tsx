@@ -5,7 +5,7 @@ import { PropsWithChildren } from "react";
 export default function Layout({ children }: PropsWithChildren) {
   return (
     <>
-      <NavDash title="Detalle del Proveedores" />
+      <NavDash title="Detalles del Proveedores" />
       <main>{children}</main>
       <FooterRights />
     </>

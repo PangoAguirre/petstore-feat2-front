@@ -1,7 +1,7 @@
 import { FieldConfigs } from "@/components/common/PartialForm";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import z from "zod";
+import z, { ZodTypeAny } from "zod";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -17,7 +17,13 @@ export function pwRequirements(pass: string) {
   );
 }
 
-export function createSchema(fields: FieldConfigs) {
+export type SchemaFromFields<T extends FieldConfigs> = {
+  [K in keyof T]: T[K]["ztype"] extends ZodTypeAny
+    ? T[K]["ztype"]
+    : z.ZodString; // fallback to ZodString if no ztype
+};
+
+export function createSchema<T extends FieldConfigs>(fields: T) {
   return z.object(
     Object.fromEntries(
       Object.entries(fields).map(([id, { ztype: type }]) => [
@@ -28,6 +34,11 @@ export function createSchema(fields: FieldConfigs) {
   );
 }
 
-export function createDefaultValues(fields: FieldConfigs) {
-  return Object.fromEntries(Object.keys(fields).map((f) => [f, ""]));
+export function createDefaultValues<T extends FieldConfigs>(
+  fields: T,
+): Record<keyof T, string> {
+  return Object.fromEntries(Object.keys(fields).map((f) => [f, ""])) as Record<
+    keyof T,
+    string
+  >;
 }

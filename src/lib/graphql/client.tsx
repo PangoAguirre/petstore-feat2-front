@@ -14,12 +14,15 @@ import { getSession } from "next-auth/react";
 
 const serviceLinks = {
   auth: new HttpLink({
-    uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/graphql`,
+    uri:
+      process.env.NODE_ENV === "development"
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}:8081/graphql` // to test on local
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/graphql`,
   }),
   suppliers: new HttpLink({
     uri:
       process.env.NODE_ENV === "development"
-        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql` // to test on local (port is 8082)
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}:8082/graphql` // to test on local
         : `${process.env.NEXT_PUBLIC_BACKEND_URL}/supplier/graphql`,
   }),
 };

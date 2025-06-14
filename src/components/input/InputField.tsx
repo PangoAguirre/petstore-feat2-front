@@ -15,13 +15,14 @@ import {
 import { Input } from "../ui/input";
 import { HTMLInputTypeAttribute } from "react";
 import { DatePicker } from "./DatePicker";
+import { SelectInput, SelectInputProps } from "./SelectInput";
 
-export interface InputFieldProps {
+export interface InputFieldProps extends SelectInputProps {
   id: string;
   label: string;
   placeholder?: string;
   hint?: string;
-  type?: HTMLInputTypeAttribute;
+  type?: HTMLInputTypeAttribute | "select";
 }
 
 export function InputField({
@@ -30,6 +31,7 @@ export function InputField({
   placeholder,
   hint,
   state,
+  type,
   ...props
 }: InputFieldProps &
   ControllerRenderProps<FieldValues, string> & {
@@ -39,13 +41,16 @@ export function InputField({
     <FormItem className={cn("flex flex-col gap-1")}>
       <FormLabel htmlFor={id}>{label}</FormLabel>
       <FormControl>
-        {props.type === "date" ? (
+        {type === "date" ? (
           <DatePicker {...props} />
+        ) : type == "select" ? (
+          <SelectInput {...props} />
         ) : (
           <Input
             id={id}
             placeholder={placeholder}
             className="bg-white"
+            type={type}
             {...props}
           />
         )}

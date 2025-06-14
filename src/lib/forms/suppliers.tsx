@@ -1,7 +1,7 @@
 import { FieldConfigs } from "@/components/common/PartialForm";
 import z from "zod";
 
-export const generalInfoFields: FieldConfigs = {
+export const generalInfoFields = {
   name: {
     label: "Nombre",
     placeholder: "Ingrese el nombre del proveedor",
@@ -24,9 +24,9 @@ export const generalInfoFields: FieldConfigs = {
   //   placeholder: "Ingrese el tiempo de entrega (días)",
   //   ztype: z.coerce.number().positive(),
   // },
-};
+} satisfies FieldConfigs;
 
-export const contactInfoFields: FieldConfigs = {
+export const contactInfoFields = {
   phone: {
     label: "Teléfono",
     placeholder: "Ingrese el número de teléfono",
@@ -45,9 +45,9 @@ export const contactInfoFields: FieldConfigs = {
     label: "Dirección Física",
     placeholder: "Ingrese la dirección completa",
   },
-};
+} satisfies FieldConfigs;
 
-export const paymentConditionsFields: FieldConfigs = {
+export const paymentConditionsFields = {
   creditDays: {
     label: "Días de crédito",
     type: "number",
@@ -68,9 +68,9 @@ export const paymentConditionsFields: FieldConfigs = {
     type: "number",
     ztype: z.coerce.number(),
   },
-};
+} satisfies FieldConfigs;
 
-export const productFields: FieldConfigs = {
+export const productFields = {
   code: { label: "Código" },
   name: { label: "Nombre" },
   description: { label: "Descripción" },
@@ -79,4 +79,4 @@ export const productFields: FieldConfigs = {
     type: "number",
     ztype: z.coerce.number().positive(),
   },
-};
+} satisfies FieldConfigs;

@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export interface InfoProps {
   title: string;
   desc?: string;
@@ -9,7 +11,10 @@ export function Info({
   ...props
 }: React.ComponentProps<"div"> & InfoProps) {
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div
+      className={cn("flex flex-col items-center gap-4", props.className)}
+      {...props}
+    >
       <h1 className="text-4xl font-bold">{title}</h1>
       {desc && <p>{desc}</p>}
       {props.children && (

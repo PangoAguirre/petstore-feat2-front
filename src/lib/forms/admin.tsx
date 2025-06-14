@@ -2,7 +2,7 @@ import { FieldConfigs } from "@/components/common/PartialForm";
 import z from "zod";
 import { pwRequirements } from "../utils";
 
-export const adminCreationFields: FieldConfigs = {
+export const adminCreationFields = {
   username: {
     label: "Nombre de Usuario",
     placeholder: "Introduce tu nombre de usuario",
@@ -24,4 +24,16 @@ export const adminCreationFields: FieldConfigs = {
         "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
     }),
   },
-};
+} satisfies FieldConfigs;
+
+export const supplierManagerFields = {
+  username: adminCreationFields.username,
+  password: adminCreationFields.password,
+  role: {
+    label: "Rol",
+    type: "select", //TODO: maybe list of roles?
+    hint: "Selecciona el rol correspondiente",
+    selectOpts: ["Gestor de Proveedores"],
+    defaultOpt: "Gestor de Proveedores",
+  },
+} satisfies FieldConfigs;

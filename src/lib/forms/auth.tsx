@@ -2,7 +2,7 @@ import { FieldConfigs } from "@/components/common/PartialForm";
 import z from "zod";
 import { pwRequirements, pwReqMessage } from "../utils";
 
-export const loginFields: FieldConfigs = {
+export const loginFields = {
   email: {
     label: "Correo Electrónico",
     placeholder: "tucorreo@ejemplo.com",
@@ -14,9 +14,9 @@ export const loginFields: FieldConfigs = {
     type: "password",
     ztype: z.string().min(4, { message: "Ingrese al menos 4 carácteres." }),
   },
-};
+} satisfies FieldConfigs;
 
-export const signupFields: FieldConfigs = {
+export const signupFields = {
   fullName: {
     label: "Nombre completo",
     placeholder: "Ingrese su nombre completo",
@@ -40,4 +40,4 @@ export const signupFields: FieldConfigs = {
     type: "password",
     ztype: z.string().nonempty({ message: "Requerido" }),
   },
-};
+} satisfies FieldConfigs;

@@ -230,7 +230,6 @@ export type UpdateSupplierGeneralInfoMutationVariables = Exact<{
   id: Scalars['ID']['input'];
   nit?: InputMaybe<Scalars['String']['input']>;
   nombre?: InputMaybe<Scalars['String']['input']>;
-  telefono?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
@@ -264,6 +263,13 @@ export type UpdatePaymentConditionMutationVariables = Exact<{
 
 
 export type UpdatePaymentConditionMutation = { __typename?: 'Mutation', actualizarCondicionPago?: { __typename?: 'CondicionPago', diasCredito?: number | null } | null };
+
+export type DeleteSupplierMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type DeleteSupplierMutation = { __typename?: 'Mutation', deleteProveedor?: boolean | null };
 
 export type SignUpMutationVariables = Exact<{
   email?: InputMaybe<Scalars['String']['input']>;
@@ -299,7 +305,7 @@ export type GetSupplierByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetSupplierByIdQuery = { __typename?: 'Query', getProveedorById?: { __typename?: 'Proveedor', nombre?: string | null, nit?: string | null, telefono?: string | null, idUsuarioCreador?: string | null, direccion?: string | null, email?: string | null, condicionesPago?: Array<{ __typename?: 'CondicionPago', idCondicionPago: string, diasCredito?: number | null, fechaInicio?: string | null, fechaFin?: string | null, nota?: string | null } | null> | null, productos?: Array<{ __typename?: 'Producto', codigo: string, descripcion: string, idProducto: string, nombre: string, precio: number } | null> | null } | null };
+export type GetSupplierByIdQuery = { __typename?: 'Query', getProveedorById?: { __typename?: 'Proveedor', activo?: boolean | null, nombre?: string | null, nit?: string | null, telefono?: string | null, idUsuarioCreador?: string | null, direccion?: string | null, email?: string | null, condicionesPago?: Array<{ __typename?: 'CondicionPago', idCondicionPago: string, diasCredito?: number | null, fechaInicio?: string | null, fechaFin?: string | null, nota?: string | null } | null> | null, productos?: Array<{ __typename?: 'Producto', codigo: string, descripcion: string, idProducto: string, nombre: string, precio: number } | null> | null } | null };
 
 export type GetUserIdQueryVariables = Exact<{
   email: Scalars['String']['input'];
@@ -395,8 +401,8 @@ export type NewSupplierMutationHookResult = ReturnType<typeof useNewSupplierMuta
 export type NewSupplierMutationResult = Apollo.MutationResult<NewSupplierMutation>;
 export type NewSupplierMutationOptions = Apollo.BaseMutationOptions<NewSupplierMutation, NewSupplierMutationVariables>;
 export const UpdateSupplierGeneralInfoDocument = gql`
-    mutation UpdateSupplierGeneralInfo($id: ID!, $nit: String, $nombre: String, $telefono: String) {
-  updateProveedor(id: $id, nit: $nit, nombre: $nombre, telefono: $telefono) {
+    mutation UpdateSupplierGeneralInfo($id: ID!, $nit: String, $nombre: String) {
+  updateProveedor(id: $id, nit: $nit, nombre: $nombre) {
     idProveedor
   }
 }
@@ -419,7 +425,6 @@ export type UpdateSupplierGeneralInfoMutationFn = Apollo.MutationFunction<Update
  *      id: // value for 'id'
  *      nit: // value for 'nit'
  *      nombre: // value for 'nombre'
- *      telefono: // value for 'telefono'
  *   },
  * });
  */
@@ -548,6 +553,37 @@ export function useUpdatePaymentConditionMutation(baseOptions?: Apollo.MutationH
 export type UpdatePaymentConditionMutationHookResult = ReturnType<typeof useUpdatePaymentConditionMutation>;
 export type UpdatePaymentConditionMutationResult = Apollo.MutationResult<UpdatePaymentConditionMutation>;
 export type UpdatePaymentConditionMutationOptions = Apollo.BaseMutationOptions<UpdatePaymentConditionMutation, UpdatePaymentConditionMutationVariables>;
+export const DeleteSupplierDocument = gql`
+    mutation DeleteSupplier($id: ID!) {
+  deleteProveedor(id: $id)
+}
+    `;
+export type DeleteSupplierMutationFn = Apollo.MutationFunction<DeleteSupplierMutation, DeleteSupplierMutationVariables>;
+
+/**
+ * __useDeleteSupplierMutation__
+ *
+ * To run a mutation, you first call `useDeleteSupplierMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSupplierMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSupplierMutation, { data, loading, error }] = useDeleteSupplierMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteSupplierMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSupplierMutation, DeleteSupplierMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSupplierMutation, DeleteSupplierMutationVariables>(DeleteSupplierDocument, options);
+      }
+export type DeleteSupplierMutationHookResult = ReturnType<typeof useDeleteSupplierMutation>;
+export type DeleteSupplierMutationResult = Apollo.MutationResult<DeleteSupplierMutation>;
+export type DeleteSupplierMutationOptions = Apollo.BaseMutationOptions<DeleteSupplierMutation, DeleteSupplierMutationVariables>;
 export const SignUpDocument = gql`
     mutation SignUp($email: String = "", $nombre: String = "", $password: String = "") {
   registerUser(email: $email, nombre: $nombre, password: $password) {
@@ -707,6 +743,7 @@ export type GetSuppliersQueryResult = Apollo.QueryResult<GetSuppliersQuery, GetS
 export const GetSupplierByIdDocument = gql`
     query GetSupplierById($id: ID!) {
   getProveedorById(id: $id) {
+    activo
     nombre
     nit
     telefono

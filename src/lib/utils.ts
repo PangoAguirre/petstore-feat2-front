@@ -34,11 +34,10 @@ export function createSchema<T extends FieldConfigs>(fields: T) {
   );
 }
 
-export function createDefaultValues<T extends FieldConfigs>(
-  fields: T,
-): Record<keyof T, string> {
-  return Object.fromEntries(Object.keys(fields).map((f) => [f, ""])) as Record<
-    keyof T,
-    string
-  >;
+export type ValuesFromConfig<T extends FieldConfigs> = Record<keyof T, string>;
+
+export function createDefaultValues<T extends FieldConfigs>(fields: T) {
+  return Object.fromEntries(
+    Object.keys(fields).map((f) => [f, ""]),
+  ) as ValuesFromConfig<T>;
 }

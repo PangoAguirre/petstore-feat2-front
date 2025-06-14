@@ -12,6 +12,7 @@ query GetSuppliers {
 
 query GetSupplierById($id: ID!) {
   getProveedorById(id: $id) {
+    activo
     nombre
     nit
     telefono

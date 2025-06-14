@@ -68,6 +68,7 @@
     "@graphql-codegen/cli": "5.0.6",
     "@graphql-codegen/client-preset": "4.8.1",
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
+    "@graphql-codegen/typescript-resolvers": "^4.5.1",
     "@parcel/watcher": "^2.5.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

@@ -33,3 +33,54 @@ mutation NewSupplier(
     idProveedor
   }
 }
+
+mutation UpdateSupplierGeneralInfo(
+  $id: ID!
+  $nit: String
+  $nombre: String
+  $telefono: String
+) {
+  updateProveedor(id: $id, nit: $nit, nombre: $nombre, telefono: $telefono) {
+    idProveedor
+  }
+}
+
+mutation UpdateSupplierContact(
+  $id: ID!
+  $telefono: String
+  $email: String
+  $direccion: String
+) {
+  updateProveedor(
+    id: $id
+    telefono: $telefono
+    email: $email
+    direccion: $direccion
+  ) {
+    idProveedor
+  }
+}
+
+mutation NewPaymentCondition($idProveedor: ID!, $input: CondicionPagoInput!) {
+  crearCondicionPagoParaProveedor(input: $input, idProveedor: $idProveedor) {
+    idCondicionPago
+  }
+}
+
+mutation UpdatePaymentCondition(
+  $diasCredito: Int
+  $fechaFin: String
+  $fechaInicio: String
+  $idCondicionPago: ID!
+  $nota: String
+) {
+  actualizarCondicionPago(
+    idCondicionPago: $idCondicionPago
+    diasCredito: $diasCredito
+    fechaFin: $fechaFin
+    fechaInicio: $fechaInicio
+    nota: $nota
+  ) {
+    diasCredito
+  }
+}

@@ -1,8 +1,9 @@
 "use client";
 
 import { Info } from "@/components/common/Info";
-import { FieldConfigs, PartialForm } from "@/components/common/PartialForm";
+import { PartialForm } from "@/components/common/PartialForm";
 import { Button } from "@/components/ui/button";
+import { loginFields } from "@/lib/forms/auth";
 import { createDefaultValues, createSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoaderCircle } from "lucide-react";
@@ -13,14 +14,13 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 
 export default function Login() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const form = useForm({
-    defaultValues: createDefaultValues(fields),
-    resolver: zodResolver(createSchema(fields)),
+    defaultValues: createDefaultValues(loginFields),
+    resolver: zodResolver(createSchema(loginFields)),
     mode: "onChange",
   });
 
@@ -54,7 +54,7 @@ export default function Login() {
                 setLoading(false);
               });
           }}
-          fields={fields}
+          fields={loginFields}
           leftInfo={
             <Info
               title="¡Bienvenido de nuevo!"
@@ -97,17 +97,3 @@ export default function Login() {
     </motion.div>
   );
 }
-
-const fields: FieldConfigs = {
-  email: {
-    label: "Correo Electrónico",
-    placeholder: "tucorreo@ejemplo.com",
-    type: "email",
-    ztype: z.string().email({ message: "Ingrese un correo válido" }),
-  },
-  password: {
-    label: "Contraseña",
-    type: "password",
-    ztype: z.string().min(4, { message: "Ingrese al menos 4 carácteres." }),
-  },
-};

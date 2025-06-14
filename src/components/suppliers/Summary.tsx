@@ -3,8 +3,7 @@ import { FlexCol } from "../common/FlexCol";
 import { SummaryItem } from "./SummaryItem";
 import { format } from "date-fns";
 
-// TODO: define proper type for all info
-export function Summary({ info }: { info: Record<string, any> }) {
+export function Summary({ info }: { info: Record<string, string> }) {
   return (
     <ul className="flex flex-col">
       <SummaryItem icon="📝">
@@ -12,10 +11,6 @@ export function Summary({ info }: { info: Record<string, any> }) {
           <span className="font-bold">Datos Generales</span>
           <span>Nombre: {info.name}</span>
           <span>NIT: {info.nit}</span>
-        </FlexCol>
-        <FlexCol right>
-          <span>Categoría: {info.category}</span>
-          <span>Tiempo de entrega: {info.deliveryTime} dias</span>
         </FlexCol>
       </SummaryItem>
       <Separator />

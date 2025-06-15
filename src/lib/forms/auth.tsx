@@ -35,9 +35,21 @@ export const signupFields = {
     }),
   },
   passwordAgain: {
-    label: "Confirmación de contraseña",
+    label: "Confirmar contraseña",
     placeholder: "Repita su contraseña",
     type: "password",
     ztype: z.string().nonempty({ message: "Requerido" }),
+  },
+} satisfies FieldConfigs;
+
+export const newPasswordFields = {
+  password: {
+    ...signupFields.password,
+    label: "Nueva Contraseña",
+    placeholder: "Ingresa tu nueva contraseña",
+  },
+  passwordAgain: {
+    ...signupFields.passwordAgain,
+    placeholder: "Confirma tu nueva contraseña",
   },
 } satisfies FieldConfigs;

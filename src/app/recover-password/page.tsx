@@ -2,43 +2,75 @@
 import { MediumTitle, SmallTextDefault } from "@/components/atoms/heroTitle";
 import RegisterForm from "@/components/atoms/registerForm";
 import ButtomYe from "@/components/atoms/buttomYe";
-import { useState } from "react";
-import axios, { HttpStatusCode } from "axios";
+import { useEffect, useState } from "react";
+import { AxiosError, HttpStatusCode } from "axios";
 import { toast } from "sonner";
+import { restClient } from "../api/client";
+import { useSearchParams } from "next/navigation";
+import { Loader2Icon } from "lucide-react";
+import { NewPassword } from "@/components/auth/NewPassword";
+import { useMutation } from "react-query";
 
 export default function RecoverPassword() {
   const [email, setEmail] = useState("");
-  const [sending, setSending] = useState(false);
+  const { mutate: sendRecoveryEmail, isLoading: sending } = useMutation({
+    mutationKey: ["requestReset"],
+    mutationFn: () =>
+      restClient.post("/password/request-reset", {
+        email,
+      }),
+    onError: (err: AxiosError) => {
+      if (err.response) {
+        toast.error("Error", {
+          description: (err.response.data as any).message,
+        });
+      } else {
+        toast.error("Error", {
+          description: "No fue posible enviar el email, intente más tarde.",
+        });
+        console.error(err);
+      }
+    },
+    onSuccess: (res) => {
+      if (res.status == HttpStatusCode.Ok) {
+        toast.info("Email envíado", { description: res.data.message });
+      } else {
+        toast.error("No fue posible enviar el email");
+        console.error(res.data);
+      }
+    },
+  });
+  const params = useSearchParams();
+  const [tokenStatus, setTokenStatus] = useState<
+    undefined | "validating" | "valid" | "invalid"
+  >();
 
-  const sendRecoveryEmail = () => {
-    setSending(true);
-    axios
-      .post(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}:8081/password/request-reset`,
-        {
-          email,
-        },
-      )
-      .then((res) => {
-        if (res.status == HttpStatusCode.Ok) {
-          toast.info("Email envíado", { description: res.data.message });
-        } else {
-          toast.error("No fue posible enviar el email");
-          console.error(res.data);
-        }
-      })
-      .catch((err) => {
-        if (err.response) {
-          toast.error("Error", { description: err.response.data.message });
-        } else {
-          toast.error("Error", {
-            description: "No fue posible enviar el email, intente más tarde.",
-          });
-          console.error(err);
-        }
-      })
-      .finally(() => setSending(false));
-  };
+  const token = params.get("token");
+
+  useEffect(() => {
+    console.log(token);
+    if (token && token.toString().length > 0) {
+      setTokenStatus("validating");
+      restClient
+        .get("/password/validate", { params: { token: token } })
+        .then((res) =>
+          setTokenStatus(res.data.valid == true ? "valid" : "invalid"),
+        )
+        .catch(() => {
+          toast.error("Token inválido");
+          setTokenStatus("invalid");
+        });
+    }
+  }, [token]);
+
+  if (tokenStatus === "validating") {
+    return (
+      <div>
+        <Loader2Icon className="animate-spin m-auto" />
+      </div>
+    );
+  }
+  if (token && tokenStatus === "valid") return <NewPassword token={token} />;
 
   return (
     <div className="w-full h-100 flex justify-center items-center gap-30">

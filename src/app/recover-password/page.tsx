@@ -12,6 +12,10 @@ import { NewPassword } from "@/components/auth/NewPassword";
 import { useMutation } from "react-query";
 
 export default function RecoverPassword() {
+  const params = useSearchParams();
+  const [tokenStatus, setTokenStatus] = useState<
+    undefined | "validating" | "valid" | "invalid"
+  >();
   const [email, setEmail] = useState("");
   const { mutate: sendRecoveryEmail, isLoading: sending } = useMutation({
     mutationKey: ["requestReset"],
@@ -40,10 +44,6 @@ export default function RecoverPassword() {
       }
     },
   });
-  const params = useSearchParams();
-  const [tokenStatus, setTokenStatus] = useState<
-    undefined | "validating" | "valid" | "invalid"
-  >();
 
   const token = params.get("token");
 

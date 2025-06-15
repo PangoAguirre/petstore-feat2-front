@@ -18,6 +18,7 @@ import {
 } from "@/lib/graphql/codegen";
 import { ValuesFromConfig } from "@/lib/utils";
 import { ApolloError } from "@apollo/client";
+import { format } from "date-fns";
 import { Loader2Icon } from "lucide-react";
 import { motion } from "motion/react";
 import { useSession } from "next-auth/react";
@@ -120,8 +121,8 @@ export default function SupplierDetails() {
               idCondicionPago:
                 data.getProveedorById?.condicionesPago[0]?.idCondicionPago,
               diasCredito: parseInt(values.creditDays),
-              fechaInicio: values.startDate,
-              fechaFin: values.endDate,
+              fechaInicio: format(values.startDate, "yyyy-MM-dd"),
+              fechaFin: format(values.endDate, "yyyy-MM-dd"),
               nota: values.grade,
             },
           })
@@ -136,12 +137,16 @@ export default function SupplierDetails() {
               input: {
                 idUsuario: userId,
                 diasCredito: parseInt(values.creditDays),
-                fechaInicio: values.startDate,
-                fechaFin: values.endDate,
+                fechaInicio: format(values.startDate, "yyyy-MM-dd"),
+                fechaFin: format(values.endDate, "yyyy-MM-dd"),
                 nota: values.grade,
               },
             },
-          });
+          })
+            .then(() => onSuccess())
+            .catch((err: ApolloError) => {
+              onError(err.message);
+            });
         } else {
           console.log("User not logged in");
         }
@@ -221,7 +226,7 @@ export default function SupplierDetails() {
                       supplierInfo.condicionesPago[0]?.diasCredito ?? 0,
                     startDate: supplierInfo.condicionesPago[0]?.fechaInicio,
                     endDate: supplierInfo.condicionesPago[0]?.fechaFin,
-                    grade: supplierInfo.condicionesPago[0]?.nota,
+                    grade: supplierInfo.condicionesPago[0]?.nota ?? "",
                   }
                 : {}
             }

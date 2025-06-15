@@ -1,8 +1,8 @@
 import { Separator } from "../ui/separator";
 import { FlexCol } from "../common/FlexCol";
 import { SummaryItem } from "./SummaryItem";
+import { format } from "date-fns";
 
-// TODO: define proper type for all info and use zod
 export function Summary({ info }: { info: Record<string, string> }) {
   return (
     <ul className="flex flex-col">
@@ -10,18 +10,14 @@ export function Summary({ info }: { info: Record<string, string> }) {
         <FlexCol>
           <span className="font-bold">Datos Generales</span>
           <span>Nombre: {info.name}</span>
-          <span>Descripción: {info.description}</span>
-        </FlexCol>
-        <FlexCol right>
-          <span>Categoría: {info.category}</span>
-          <span>Tiempo de entrega: {info.deliveryTime} dias</span>
+          <span>NIT: {info.nit}</span>
         </FlexCol>
       </SummaryItem>
       <Separator />
       <SummaryItem icon="📦">
         <FlexCol>
           <span className="font-bold">Productos Asociados</span>
-          <span>{info.name} Productos agregados</span>
+          <span>{info.products.length} Productos agregados</span>
         </FlexCol>
         <FlexCol right>
           <span>Ver detalles</span>
@@ -42,10 +38,11 @@ export function Summary({ info }: { info: Record<string, string> }) {
       <SummaryItem icon="💳">
         <FlexCol>
           <span className="font-bold">Condiciones de Pago</span>
-          <span>Plazo de Pago: {info.paymentDeadline}</span>
+          <span>Fecha de inicio: {format(info.startDate, "PPP")}</span>
+          <span>Fecha límite: {format(info.endDate, "PPP")}</span>
         </FlexCol>
         <FlexCol right>
-          <span>Método de Pago: {info.paymentMethod}</span>
+          <span>Días crédito: {info.creditDays}</span>
         </FlexCol>
       </SummaryItem>
     </ul>

@@ -1,0 +1,37 @@
+query GetSuppliers {
+  getProveedores {
+    activo
+    nombre
+    email
+    condicionesPago {
+      diasCredito
+    }
+    idProveedor
+  }
+}
+
+query GetSupplierById($id: ID!) {
+  getProveedorById(id: $id) {
+    activo
+    nombre
+    nit
+    telefono
+    idUsuarioCreador
+    direccion
+    email
+    condicionesPago {
+      idCondicionPago
+      diasCredito
+      fechaInicio
+      fechaFin
+      nota
+    }
+    productos {
+      codigo
+      descripcion
+      idProducto
+      nombre
+      precio
+    }
+  }
+}

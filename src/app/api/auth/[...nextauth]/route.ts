@@ -1,10 +1,12 @@
-import { ApolloClient, ApolloError, gql, InMemoryCache } from "@apollo/client";
+import { ApolloClient, ApolloError, InMemoryCache } from "@apollo/client";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
+import { GetUserIdDocument, LoginDocument } from "@/lib/graphql/codegen";
+import { serviceLinks } from "@/lib/graphql/apolloLinks";
 
 const loginClient = new ApolloClient({
-  uri: `${process.env.BACKEND_URL}/graphql`,
+  link: serviceLinks.auth,
   cache: new InMemoryCache(),
 });
 
@@ -21,11 +23,7 @@ const handler = NextAuth({
 
         try {
           const { data, errors } = await loginClient.mutate({
-            mutation: gql`
-              mutation Login($password: String = "", $email: String = "") {
-                login(password: $password, email: $email)
-              }
-            `,
+            mutation: LoginDocument,
             variables: {
               email: credentials.email,
               password: credentials.password,
@@ -47,8 +45,15 @@ const handler = NextAuth({
             exp: number;
           }>(res);
 
+          const { data: userData } = await loginClient.query({
+            query: GetUserIdDocument,
+            variables: {
+              email: credentials.email,
+            },
+          });
+
           return {
-            id: jwt.sub,
+            id: userData.getUserByEmail.id,
             email: jwt.sub,
             token: res,
           };
@@ -75,6 +80,7 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token }) {
+      session.user.id = token.id;
       session.user.email = token.email;
       session.user.name = token.name;
       session.jwt = token.jwt;

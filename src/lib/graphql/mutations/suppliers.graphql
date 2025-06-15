@@ -1,0 +1,85 @@
+mutation NewSupplier(
+  $direccion: String = ""
+  $email: String = ""
+  $idUsuarioCreador: ID = ""
+  $nit: String = ""
+  $nombre: String = ""
+  $telefono: String = ""
+  $productos: [ProductoInput!] = {
+    codigo: ""
+    nombre: ""
+    descripcion: ""
+    precio: 1.5
+  }
+  $condicionesPago: [CondicionPagoInput!] = {
+    diasCredito: 10
+    fechaInicio: ""
+    fechaFin: ""
+    idUsuario: ""
+  }
+) {
+  createProveedor(
+    input: {
+      nombre: $nombre
+      nit: $nit
+      telefono: $telefono
+      idUsuarioCreador: $idUsuarioCreador
+      direccion: $direccion
+      email: $email
+      productos: $productos
+      condicionesPago: $condicionesPago
+    }
+  ) {
+    idProveedor
+  }
+}
+
+mutation UpdateSupplierGeneralInfo($id: ID!, $nit: String, $nombre: String) {
+  updateProveedor(id: $id, nit: $nit, nombre: $nombre) {
+    idProveedor
+  }
+}
+
+mutation UpdateSupplierContact(
+  $id: ID!
+  $telefono: String
+  $email: String
+  $direccion: String
+) {
+  updateProveedor(
+    id: $id
+    telefono: $telefono
+    email: $email
+    direccion: $direccion
+  ) {
+    idProveedor
+  }
+}
+
+mutation NewPaymentCondition($idProveedor: ID!, $input: CondicionPagoInput!) {
+  crearCondicionPagoParaProveedor(input: $input, idProveedor: $idProveedor) {
+    idCondicionPago
+  }
+}
+
+mutation UpdatePaymentCondition(
+  $diasCredito: Int
+  $fechaFin: String
+  $fechaInicio: String
+  $idCondicionPago: ID!
+  $nota: String
+) {
+  actualizarCondicionPago(
+    idCondicionPago: $idCondicionPago
+    diasCredito: $diasCredito
+    fechaFin: $fechaFin
+    fechaInicio: $fechaInicio
+    nota: $nota
+  ) {
+    diasCredito
+  }
+}
+
+mutation DeleteSupplier($id: ID!) {
+  deleteProveedor(id: $id)
+}

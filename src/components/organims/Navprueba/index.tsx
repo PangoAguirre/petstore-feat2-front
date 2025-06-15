@@ -2,7 +2,6 @@ import React from "react";
 import { SubTitle } from "@/components/atoms/heroTitle";
 import NavTitle from "@/components/atoms/navTitle";
 import Logo from "@/components/atoms/logo";
-import Search from "@/components/icons/search";
 
 interface Indexprops {
   title?: string;
@@ -11,7 +10,12 @@ interface Indexprops {
   subtitle3?: string;
 }
 
-const index = ({ title = "Title", subtitle = "Subtitle-1", subtitle2 = "Subtitle-2", subtitle3 = "Subtitle-3" }: Indexprops) => {
+const index = ({
+  title = "Title",
+  subtitle = "Subtitle-1",
+  subtitle2 = "Subtitle-2",
+  subtitle3 = "Subtitle-3",
+}: Indexprops) => {
   return (
     <nav className="w-screen h-[140] bg-secondary shadow-md inset-shadow-sm">
       <div className=" flex items-center">
@@ -32,3 +36,4 @@ const index = ({ title = "Title", subtitle = "Subtitle-1", subtitle2 = "Subtitle
 };
 
 export default index;
+

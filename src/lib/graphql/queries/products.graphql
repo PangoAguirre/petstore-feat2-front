@@ -1,0 +1,9 @@
+query GetProductsBySupplierId($idProveedor: ID!) {
+  listarProductosPorProveedor(idProveedor: $idProveedor) {
+    codigo
+    descripcion
+    idProducto
+    precio
+    nombre
+  }
+}

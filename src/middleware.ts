@@ -19,8 +19,15 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         if (isAuthRelated(req.nextUrl.pathname)) return true;
-        if (process.env.NODE_ENV === "development") return true;
-        if (!token) return false;
+        if (!token) {
+          if (false && process.env.NODE_ENV === "development") {
+            console.debug(
+              `Allowing access to ${req.nextUrl.pathname} due to development mode.`,
+            );
+            return true;
+          }
+          return false;
+        }
         return true;
       },
     },
@@ -33,7 +40,7 @@ export const config = {
     "/signup",
     "/recover-password",
     "/dashboard",
-    "/suppliers/:path",
+    "/suppliers/:path?",
     "/admin/new-supplier-manager",
   ],
 };

@@ -1,25 +1,30 @@
 import { Button } from "../ui/button";
 import { InputField, InputFieldProps } from "../input/InputField";
-import { useFormContext, FieldValues, SubmitHandler } from "react-hook-form";
+import { useFormContext, SubmitHandler, Path } from "react-hook-form";
 import { z } from "zod";
 import { FormField } from "../ui/form";
 import { PropsWithChildren } from "react";
 import { LoaderCircle } from "lucide-react";
+import { ValuesFromConfig } from "@/lib/utils";
 
 export interface FieldConfigs {
   [id: string]: Omit<InputFieldProps, "id"> & { ztype?: z.ZodType };
 }
 
-export interface PartialFormProps extends PropsWithChildren {
-  fields: FieldConfigs;
+export interface PartialFormProps<T extends FieldConfigs>
+  extends PropsWithChildren {
+  fields: T;
   btnText?: string;
   leftInfo?: React.ReactNode;
-  onAction?: SubmitHandler<FieldValues>;
+  onAction?: SubmitHandler<ValuesFromConfig<T>>;
   loading?: boolean;
 }
 
-export function PartialForm(props: PartialFormProps) {
-  const { control, trigger, getValues } = useFormContext<FieldValues>();
+export function PartialForm<T extends FieldConfigs>(
+  props: PartialFormProps<T>,
+) {
+  type FormValues = ValuesFromConfig<T>;
+  const { control, trigger, getValues } = useFormContext<FormValues>();
 
   return (
     <div
@@ -34,11 +39,13 @@ export function PartialForm(props: PartialFormProps) {
         onSubmit={(e) => {
           e.preventDefault();
 
-          trigger(Object.keys(props.fields)).then((valid) => {
-            if (valid && props.onAction) {
-              props.onAction(getValues());
-            }
-          });
+          trigger(Object.keys(props.fields) as Path<FormValues>[]).then(
+            (valid) => {
+              if (valid && props.onAction) {
+                props.onAction(getValues());
+              }
+            },
+          );
         }}
         className="flex flex-col gap-10 grow py-8"
       >
@@ -46,7 +53,7 @@ export function PartialForm(props: PartialFormProps) {
           <FormField
             rules={{ required: true }}
             key={id}
-            name={id}
+            name={id as Path<FormValues>}
             control={control}
             render={({ field, fieldState }) => (
               <InputField

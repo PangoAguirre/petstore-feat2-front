@@ -2,7 +2,7 @@ import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: `${process.env.BACKEND_URL}/graphql`,
+  schema: process.env.SCHEMAS_URLS?.split(";"),
   documents: "src/lib/graphql/**/*.graphql",
   generates: {
     "src/lib/graphql/codegen.ts": {

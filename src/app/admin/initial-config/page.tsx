@@ -3,17 +3,17 @@ import { Info } from "@/components/common/Info";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { motion } from "motion/react";
-import { z } from "zod";
-import { createDefaultValues, createSchema, pwRequirements } from "@/lib/utils";
-import { FieldConfigs, PartialForm } from "@/components/common/PartialForm";
+import { createDefaultValues, createSchema } from "@/lib/utils";
+import { PartialForm } from "@/components/common/PartialForm";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { adminCreationFields } from "@/lib/forms/admin";
 
 export default function InitialConfig() {
   const [showForm, setShowForm] = useState(false);
   const form = useForm({
-    defaultValues: createDefaultValues(fields),
-    resolver: zodResolver(createSchema(fields)),
+    defaultValues: createDefaultValues(adminCreationFields),
+    resolver: zodResolver(createSchema(adminCreationFields)),
     mode: "onChange",
   });
 
@@ -32,7 +32,7 @@ export default function InitialConfig() {
             </h1>
           }
           onAction={() => console.log("TODO: ", form.getValues())}
-          fields={fields}
+          fields={adminCreationFields}
           btnText="Crear Administrador"
         />
       </FormProvider>
@@ -48,27 +48,3 @@ export default function InitialConfig() {
     </div>
   );
 }
-
-const fields: FieldConfigs = {
-  username: {
-    label: "Nombre de Usuario",
-    placeholder: "Introduce tu nombre de usuario",
-  },
-
-  email: {
-    label: "Correo Electrónico",
-    placeholder: "Introduce tu correo electrónico",
-    ztype: z.string().email(),
-  },
-
-  password: {
-    label: "Contraseña",
-    placeholder: "Introduce tu contraseña",
-    hint: "Máximo 100 caracteres",
-    type: "password",
-    ztype: z.string().refine(pwRequirements, {
-      message:
-        "La contraseña debe tener al menos 7 caracteres, una letra mayúscula y un carácter especial.",
-    }),
-  },
-};

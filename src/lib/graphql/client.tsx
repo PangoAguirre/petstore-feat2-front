@@ -1,30 +1,27 @@
-import { ApolloClient, InMemoryCache, HttpLink, from } from "@apollo/client";
+import { ApolloClient, InMemoryCache, from, ApolloLink } from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { GraphQLFormattedError } from "graphql";
 import { ServerOffIcon } from "lucide-react";
 import { toast } from "sonner";
 import { setContext } from "@apollo/client/link/context";
 import { getSession } from "next-auth/react";
+import { serviceLinks } from "./apolloLinks";
 
-const handleGraphQLError = ({ message, path }: GraphQLFormattedError) => {
-  if (
-    path?.includes("registerUser") &&
-    message.includes("Ya existe") &&
-    message.includes("correo")
-  ) {
-    toast.error("Correo en uso", {
-      description: "El correo electrónico ya está asociado a otra cuenta.",
-    });
-    return true;
+// use on or another based on serviceName from context
+const httpLink = new ApolloLink((op, fw) => {
+  const { serviceName } = op.getContext();
+  if (serviceName in serviceLinks) {
+    return serviceLinks[serviceName as keyof typeof serviceLinks].request(
+      op,
+      fw,
+    );
   }
 
-  return false;
-};
-
-const httpLink = new HttpLink({
-  uri: `${process.env.NEXT_PUBLIC_BACKEND_URL}/graphql`,
+  console.warn(`No link found for ${serviceName}. Using default one: 'auth'.`);
+  return serviceLinks.auth.request(op, fw);
 });
 
+// set Bearer on every req
 const authLink = setContext(async (_, { headers }) => {
   const session = await getSession();
   return {
@@ -35,6 +32,9 @@ const authLink = setContext(async (_, { headers }) => {
   };
 });
 
+// --------------------------------------------------------
+// -------------------- Error handling --------------------
+// --------------------------------------------------------
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
     graphQLErrors.forEach((err) => {
@@ -53,6 +53,21 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     console.error(`[Network error]: ${networkError}`);
   }
 });
+
+const handleGraphQLError = ({ message, path }: GraphQLFormattedError) => {
+  if (
+    path?.includes("registerUser") &&
+    message.includes("Ya existe") &&
+    message.includes("correo")
+  ) {
+    toast.error("Correo en uso", {
+      description: "El correo electrónico ya está asociado a otra cuenta.",
+    });
+    return true;
+  }
+
+  return false;
+};
 
 export const client = new ApolloClient({
   link: from([errorLink, authLink, httpLink]),

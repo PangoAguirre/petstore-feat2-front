@@ -15,11 +15,7 @@ export default function Dashboard() {
           <LittleTag title="Proveedores" />
           <LittleTag title="Usuarios" />
           <LittleTag title="Configuración" />
-          <LittleTag
-            title="Cerrar Sesión"
-            className="hover:cursor-pointer hover:brightness-90 transition-all ease-out"
-            onClick={() => signOut()}
-          />
+          <LittleTag title="Cerrar Sesión" onClick={() => signOut()} />
         </div>
         <div className="">
           <WelcomeShow></WelcomeShow>

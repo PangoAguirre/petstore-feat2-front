@@ -3,6 +3,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { InfoIcon } from "lucide-react";
 import { Providers } from "@/lib/Providers";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "PetStore Manager",
@@ -17,9 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-dvh max-w-dvw antialiased overflow-x-hidden">
         <Providers>
-          <div className="min-h-full flex flex-col justify-between ">
+          <Suspense fallback={<div className="w-80 h-80 bg-red">AAAAAA</div>}>
             {children}
-          </div>
+          </Suspense>
           <Toaster
             icons={{
               error: (

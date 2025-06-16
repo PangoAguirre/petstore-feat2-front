@@ -35,6 +35,12 @@ export function DatePicker(props: ControllerRenderProps<FieldValues, string>) {
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
+          className="bg-secondary"
+          classNames={{
+            nav_button:
+              "bg-primary p-1 shadow-md rounded-sm hover:scale-130 transition-all ease-out",
+            day_today: "bg-secondary brightness-110",
+          }}
           mode="single"
           selected={date}
           onSelect={(date) => {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { InfoIcon } from "lucide-react";
+import { InfoIcon, Loader2Icon } from "lucide-react";
 import { Providers } from "@/lib/Providers";
 import { Suspense } from "react";
 
@@ -18,7 +18,13 @@ export default function RootLayout({
     <html lang="en">
       <body className="h-dvh max-w-dvw antialiased overflow-x-hidden">
         <Providers>
-          <Suspense fallback={<div className="w-80 h-80 bg-red">AAAAAA</div>}>
+          <Suspense
+            fallback={
+              <div className="m-auto">
+                <Loader2Icon className="animate-spin" />
+              </div>
+            }
+          >
             {children}
           </Suspense>
           <Toaster

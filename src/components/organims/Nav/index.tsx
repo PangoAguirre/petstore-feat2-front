@@ -24,22 +24,6 @@ const index = ({ title = "Title" }: Indexprops) => {
           <NavTitle title="Proveedores" link="/"></NavTitle>
           <NavTitle title="Reportes" link="/"></NavTitle>
         </div>
-        <div>
-          <div className="flex justify-between items-center h-9 w-40 bg-white rounded-[4]">
-            <div className="flex relative items-center rounded-[6]">
-              <input
-                type="text"
-                placeholder="Search in site"
-                className="ml-4 w-28"
-              />
-              <div className="flex justify-end">
-                <button className="cursor-pointer">
-                  <Search></Search>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </nav>
   );

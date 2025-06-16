@@ -4,15 +4,11 @@ import { SmallTextDefault, BigText } from "../heroTitle";
 
 interface indexprops {
   title: string;
-  text: string;
+  text?: string;
   date: string;
 }
 
-const index = ({
-  title = "Title",
-  text = "Text",
-  date = "Date",
-}: indexprops) => {
+const index = ({ title = "Title", text, date = "Date" }: indexprops) => {
   return (
     <div>
       <div className="flex flex-row items-center w-[520] h-25">
@@ -24,13 +20,15 @@ const index = ({
             <div className="font-bold">
               <BigText text={title}></BigText>
             </div>
-            <div>
-              <SmallTextDefault text={text}></SmallTextDefault>
-            </div>
+            {text && (
+              <div>
+                <SmallTextDefault text={text}></SmallTextDefault>
+              </div>
+            )}
           </div>
-        <div className="flex items-center font-bold">
-          <BigText text={date}></BigText>
-        </div>
+          <div className="flex items-center font-bold">
+            <BigText text={date}></BigText>
+          </div>
         </div>
       </div>
       <div className="h-[3] w-[520] bg-gray-200"></div>

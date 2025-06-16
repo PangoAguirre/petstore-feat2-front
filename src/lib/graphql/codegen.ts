@@ -300,6 +300,11 @@ export type GetSuppliersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetSuppliersQuery = { __typename?: 'Query', getProveedores?: Array<{ __typename?: 'Proveedor', activo?: boolean | null, nombre?: string | null, email?: string | null, idProveedor: string, condicionesPago?: Array<{ __typename?: 'CondicionPago', diasCredito?: number | null } | null> | null } | null> | null };
 
+export type GetSuppliersStatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSuppliersStatsQuery = { __typename?: 'Query', getProveedores?: Array<{ __typename?: 'Proveedor', nombre?: string | null, activo?: boolean | null, fechaRegistro?: string | null } | null> | null };
+
 export type GetSupplierByIdQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -740,6 +745,47 @@ export type GetSuppliersQueryHookResult = ReturnType<typeof useGetSuppliersQuery
 export type GetSuppliersLazyQueryHookResult = ReturnType<typeof useGetSuppliersLazyQuery>;
 export type GetSuppliersSuspenseQueryHookResult = ReturnType<typeof useGetSuppliersSuspenseQuery>;
 export type GetSuppliersQueryResult = Apollo.QueryResult<GetSuppliersQuery, GetSuppliersQueryVariables>;
+export const GetSuppliersStatsDocument = gql`
+    query GetSuppliersStats {
+  getProveedores {
+    nombre
+    activo
+    fechaRegistro
+  }
+}
+    `;
+
+/**
+ * __useGetSuppliersStatsQuery__
+ *
+ * To run a query within a React component, call `useGetSuppliersStatsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSuppliersStatsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSuppliersStatsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetSuppliersStatsQuery(baseOptions?: Apollo.QueryHookOptions<GetSuppliersStatsQuery, GetSuppliersStatsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSuppliersStatsQuery, GetSuppliersStatsQueryVariables>(GetSuppliersStatsDocument, options);
+      }
+export function useGetSuppliersStatsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSuppliersStatsQuery, GetSuppliersStatsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSuppliersStatsQuery, GetSuppliersStatsQueryVariables>(GetSuppliersStatsDocument, options);
+        }
+export function useGetSuppliersStatsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetSuppliersStatsQuery, GetSuppliersStatsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetSuppliersStatsQuery, GetSuppliersStatsQueryVariables>(GetSuppliersStatsDocument, options);
+        }
+export type GetSuppliersStatsQueryHookResult = ReturnType<typeof useGetSuppliersStatsQuery>;
+export type GetSuppliersStatsLazyQueryHookResult = ReturnType<typeof useGetSuppliersStatsLazyQuery>;
+export type GetSuppliersStatsSuspenseQueryHookResult = ReturnType<typeof useGetSuppliersStatsSuspenseQuery>;
+export type GetSuppliersStatsQueryResult = Apollo.QueryResult<GetSuppliersStatsQuery, GetSuppliersStatsQueryVariables>;
 export const GetSupplierByIdDocument = gql`
     query GetSupplierById($id: ID!) {
   getProveedorById(id: $id) {

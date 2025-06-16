@@ -6,7 +6,6 @@ import SupplierCard from "@/components/molecules/SupplierCard";
 import { useGetSuppliersQuery } from "@/lib/graphql/codegen";
 import { Loader2Icon } from "lucide-react";
 import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 export default function Suppliers() {
   const { data, loading, error } = useGetSuppliersQuery({
@@ -14,25 +13,20 @@ export default function Suppliers() {
     context: { serviceName: "suppliers" },
   });
 
-  const router = useRouter();
-
   return (
     <div className="flex w-full">
       <div className="flex flex-row w-1/6 min-w-fit">
         <div className="w-full bg-gray-200">
+          <LittleTag icon="🐶" href="/" title="Inicio"></LittleTag>
           <LittleTag
-            onClick={() => router.push("/")}
-            title="Inicio"
-          ></LittleTag>
-          <LittleTag
-            onClick={() => router.push("/suppliers")}
+            icon="🐱"
+            href="/suppliers"
             title="Proveedores"
           ></LittleTag>
-          <LittleTag title="Productos"></LittleTag>
-          <LittleTag title="Ajustes"></LittleTag>
           <LittleTag
-            onClick={() => signOut()}
+            icon="❌"
             title="Cerrar Sesión"
+            onClick={() => signOut()}
           ></LittleTag>
         </div>
       </div>

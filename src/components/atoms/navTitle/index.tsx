@@ -19,4 +19,3 @@ const Index = ({ title = "Title", link = "/" }: Indexprops) => {
 };
 
 export default Index;
-

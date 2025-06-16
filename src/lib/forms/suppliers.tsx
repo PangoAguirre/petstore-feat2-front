@@ -30,6 +30,7 @@ export const contactInfoFields = {
   phone: {
     label: "Teléfono",
     placeholder: "Ingrese el número de teléfono",
+    ztype: z.string().regex(/^\d{10}$/, "Ingrese un número válido"),
   },
   email: {
     label: "Email",
@@ -64,8 +65,9 @@ export const paymentConditionsFields = {
     ztype: z.coerce.date(),
   },
   grade: {
-    label: "Nota",
-    type: "number",
+    label: "Calificación",
+    type: "select",
+    selectOpts: ["1", "2", "3", "4", "5"],
     ztype: z.coerce.number(),
   },
 } satisfies FieldConfigs;

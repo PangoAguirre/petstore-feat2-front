@@ -10,12 +10,15 @@ import { signOut } from "next-auth/react";
 export default function Dashboard() {
   return (
     <div className="">
-      <div className="flex flex-row w-[1440]">
-        <div className="w-70 h-[1689] bg-gray-200">
-          <LittleTag title="Proveedores" />
-          <LittleTag title="Usuarios" />
-          <LittleTag title="Configuración" />
-          <LittleTag title="Cerrar Sesión" onClick={() => signOut()} />
+      <div className="flex flex-row justify-between">
+        <div className=" bg-gray-200">
+          <LittleTag icon="🐱" title="Proveedores" href="/suppliers" />
+          <LittleTag icon="👥" title="Usuarios" />
+          <LittleTag
+            icon="❌"
+            title="Cerrar Sesión"
+            onClick={() => signOut()}
+          />
         </div>
         <div className="">
           <WelcomeShow></WelcomeShow>

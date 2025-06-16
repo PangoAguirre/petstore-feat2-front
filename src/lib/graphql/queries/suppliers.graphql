@@ -10,6 +10,14 @@ query GetSuppliers {
   }
 }
 
+query GetSuppliersStats {
+  getProveedores {
+    nombre
+    activo
+    fechaRegistro
+  }
+}
+
 query GetSupplierById($id: ID!) {
   getProveedorById(id: $id) {
     activo

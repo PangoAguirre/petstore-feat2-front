@@ -2,7 +2,6 @@ import React from "react";
 import { SubTitle } from "@/components/atoms/heroTitle";
 import NavTitle from "@/components/atoms/navTitle";
 import Logo from "@/components/atoms/logo";
-import Search from "@/components/icons/search";
 
 interface Indexprops {
   title?: string;
@@ -20,20 +19,10 @@ const index = ({ title = "Title" }: Indexprops) => {
             <SubTitle text={title}></SubTitle>
           </div>
         </div>
-        <div className="hidden lg:flex flex-row justify-end w-screen gap-5 mr-5">
+        <div className="hidden sm:flex flex-row justify-end w-screen gap-5 mr-5">
+          <NavTitle title="Inicio" link="/"></NavTitle>
           <NavTitle title="Proveedores" link="/suppliers"></NavTitle>
           <NavTitle title="Gestión de Usuarios" link="/"></NavTitle>
-          <NavTitle title="Configuración" link="/"></NavTitle>
-        </div>
-        <div className="flex justify-between items-center h-9 w-70 bg-white rounded-[4] mr-10 ">
-          <div className="flex items-center rounded-[6]">
-            <input type="text" placeholder="Search in site" className="ml-4" />
-          </div>
-          <div className="h-5 w-5 mr-3">
-            <button className="cursor-pointer">
-              <Search></Search>
-            </button>
-          </div>
         </div>
       </div>
     </nav>

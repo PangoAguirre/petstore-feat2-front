@@ -16,14 +16,18 @@ import { useNewSupplierMutation } from "@/lib/graphql/codegen";
 import { createDefaultValues, createSchema } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
+import { Loader2Icon } from "lucide-react";
+import { AnimatePresence } from "motion/react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ClassNameValue } from "tailwind-merge";
 
 export default function NewSupplier() {
-  const [createSupplier, {}] = useNewSupplierMutation({
+  const router = useRouter();
+  const [createSupplier, { loading }] = useNewSupplierMutation({
     context: { serviceName: "suppliers" },
     onError: ({ graphQLErrors }) => {
       if (graphQLErrors.length > 0) {
@@ -39,8 +43,7 @@ export default function NewSupplier() {
     },
     onCompleted: () => {
       toast.success("Proveedor creado exitosamente!");
-      setStep(1);
-      form.reset();
+      router.push("/suppliers");
     },
   });
   const { data } = useSession();
@@ -62,7 +65,7 @@ export default function NewSupplier() {
     mode: "onChange",
   });
 
-  const { append } = useFieldArray({
+  const { append, update, remove, fields } = useFieldArray({
     control: form.control,
     name: "products",
   });
@@ -126,7 +129,18 @@ export default function NewSupplier() {
             title="Paso 2 – Productos Asociados"
             desc="¿Qué productos ofrece este proveedor?"
           >
-            <Button variant={"outline"}>Eliminar Producto</Button>
+            <Button
+              variant={"outline"}
+              disabled={fields.length == 0}
+              onClick={() => {
+                const selectedProducts = fields
+                  .map((p: any, idx) => (p.selected ? idx : -1))
+                  .filter((idx) => idx >= 0);
+                remove(selectedProducts);
+              }}
+            >
+              Eliminar Producto
+            </Button>
             <Button onClick={() => setShowProductForm(true)}>
               Agregar Producto
             </Button>
@@ -134,14 +148,16 @@ export default function NewSupplier() {
           <div className={innerDivCn}>
             <Info title="Lista de Productos">
               <Button onClick={() => nextStep()}>Siguiente</Button>
-              <Button>Guardar Productos</Button>
             </Info>
             <div className="flex flex-wrap gap-4">
-              {form
-                .getValues("products")
-                .map((p: Record<string, unknown>, idx: number) => (
+              <AnimatePresence>
+                {fields.map((p: Record<string, unknown>, idx: number) => (
                   <ProductCard
                     key={idx}
+                    selected={p.selected as boolean}
+                    toggleSelected={() =>
+                      update(idx, { ...p, selected: !p.selected })
+                    }
                     info={{
                       code: p.code as string,
                       name: p.name as string,
@@ -150,13 +166,14 @@ export default function NewSupplier() {
                     }}
                   />
                 ))}
+              </AnimatePresence>
             </div>
           </div>
           <NewProduct
             open={showProductForm}
             onOpenChange={setShowProductForm}
             onSubmit={(data) => {
-              append(data);
+              append({ ...data, selected: false });
               setShowProductForm(false);
             }}
             onCancel={() => setShowProductForm(false)}
@@ -195,7 +212,9 @@ export default function NewSupplier() {
             <Button variant={"outline"} onClick={() => setStep(1)}>
               Volver a Revisar
             </Button>
-            <Button onClick={handleSubmit}>Finalizar</Button>
+            <Button onClick={handleSubmit}>
+              {loading ? <Loader2Icon className="animate-spin" /> : "Finalizar"}
+            </Button>
           </Info>
           <div className={innerDivCn}>
             <Info title="Revisión Final" />

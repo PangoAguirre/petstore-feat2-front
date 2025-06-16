@@ -12,7 +12,7 @@ const index = () => {
         <SmallTextDefault text="Administra tus proveedores y usuarios de manera efectiva."></SmallTextDefault>
         <div className="flex flex-row gap-5">
           <ButtonWh text="Gestionar Usuarios"></ButtonWh>
-          <ButtonYe text="Ver Proveedores"></ButtonYe>
+          <ButtonYe text="Ver Proveedores" href="/suppliers"></ButtonYe>
         </div>
       </div>
       <div className="h-[3] w-[1200] bg-gray-200"></div>

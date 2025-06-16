@@ -18,7 +18,7 @@ const ProveedorCreate = () => {
         .toSorted((p1, p2) => {
           const f1 = p1 && p1.fechaRegistro ? p1?.fechaRegistro : "";
           const f2 = p2 && p2.fechaRegistro ? p2?.fechaRegistro : "";
-          return new Date(f1).getDate() - new Date(f2).getDate();
+          return new Date(f2).getDate() - new Date(f1).getDate();
         })
         .filter((p) => p?.activo === true)
     : [];

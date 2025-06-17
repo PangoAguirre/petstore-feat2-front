@@ -76,14 +76,20 @@ describe("ProductsCatalog Component", () => {
 
     // Open the "Agregar" form:
     userEvent.click(screen.getByRole("button", { name: "Agregar" }));
+    
+    // Wait for form to appear
+    await waitFor(() => {
+      expect(screen.getByText("Agregar Producto o Servicio")).toBeInTheDocument();
+    });
 
-    // Fill in the form using placeholders (adjust if your form uses labels instead):
-    userEvent.type(screen.getByPlaceholderText("Código"), "B2");
-    userEvent.type(screen.getByPlaceholderText("Nombre"), "Prod B");
-    userEvent.type(screen.getByPlaceholderText("Precio"), "20");
+    // Fill in the form using labels
+    userEvent.type(screen.getByLabelText("Código"), "B2");
+    userEvent.type(screen.getByLabelText("Nombre"), "Prod B");
+    userEvent.type(screen.getByLabelText("Descripción"), "Desc B");
+    userEvent.type(screen.getByLabelText("Precio"), "20");
 
     // Submit:
-    userEvent.click(screen.getByRole("button", { name: "Guardar" }));
+    userEvent.click(screen.getByRole("button", { name: "Agregar" }));
 
     // The new product should show up after mutation + refetch:
     await waitFor(() => {
@@ -113,16 +119,54 @@ describe("ProductsCatalog Component", () => {
 
     // Try to add again
     userEvent.click(screen.getByRole("button", { name: "Agregar" }));
-    userEvent.type(screen.getByPlaceholderText("Código"), "B2");
-    userEvent.type(screen.getByPlaceholderText("Nombre"), "Prod B");
-    userEvent.type(screen.getByPlaceholderText("Precio"), "20");
-    userEvent.click(screen.getByRole("button", { name: "Guardar" }));
+    
+    // Wait for form to appear
+    await waitFor(() => {
+      expect(screen.getByText("Agregar Producto o Servicio")).toBeInTheDocument();
+    });
+
+    // Fill in the form using labels
+    userEvent.type(screen.getByLabelText("Código"), "B2");
+    userEvent.type(screen.getByLabelText("Nombre"), "Prod B");
+    userEvent.type(screen.getByLabelText("Descripción"), "Desc B");
+    userEvent.type(screen.getByLabelText("Precio"), "20");
+    
+    userEvent.click(screen.getByRole("button", { name: "Agregar" }));
 
     // Expect your error toast
     await waitFor(() => {
       expect(
         screen.getByText(/Error al guardar el producto/i)
       ).toBeInTheDocument();
+    });
+  });
+
+  it("cancels the form when Cancel button is clicked", async () => {
+    render(
+      <MockedProvider mocks={mocks} addTypename={false}>
+        <ProductsCatalog supplierId={supplierId} />
+      </MockedProvider>
+    );
+
+    // Wait for initial product
+    await waitFor(() => {
+      expect(screen.getByText("Prod A")).toBeInTheDocument();
+    });
+
+    // Open the "Agregar" form:
+    userEvent.click(screen.getByRole("button", { name: "Agregar" }));
+    
+    // Wait for form to appear
+    await waitFor(() => {
+      expect(screen.getByText("Agregar Producto o Servicio")).toBeInTheDocument();
+    });
+
+    // Click Cancel button
+    userEvent.click(screen.getByRole("button", { name: "Cancelar" }));
+
+    // Form should disappear
+    await waitFor(() => {
+      expect(screen.queryByText("Agregar Producto o Servicio")).not.toBeInTheDocument();
     });
   });
 });

@@ -23,7 +23,7 @@ module.exports = {
   ],
   collectCoverage: true,
   coverageDirectory: 'coverage',
-  coverageReporters: ['lcov', 'text-summary'],
+  coverageReporters: ['lcov', 'text-summary', 'text-lcov'],
   testResultsProcessor: "jest-sonar-reporter",
   collectCoverageFrom: [
     "src/**/*.{ts,tsx}",

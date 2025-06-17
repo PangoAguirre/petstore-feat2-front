@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --coverage --coverageReporters=text-lcov --collectCoverageFrom='src/**/*.{ts,tsx}' > coverage/lcov.info",
+    "test": "jest --coverage --coverageReporters=text-lcov --collectCoverageFrom='src/**/*.{ts,tsx}' --outputDirectory=coverage",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {

@@ -9,94 +9,94 @@ import { ProductsCatalog } from "../components/products/ProductsCatalog";
 import {
   GetProductsBySupplierIdDocument,
   AddProductDocument,
-  // QueryListProductsBySupplierArgs, // Removed as it is not exported
+  GetProductsBySupplierIdQuery,
+  GetProductsBySupplierIdQueryVariables,
   AddProductMutation,
+  AddProductMutationVariables,
 } from "@/lib/graphql/codegen";
 
 const supplierId = "123";
 
-// 1) Initial mocked data for the query
-const initialProductsData: {
-  listProductsBySupplier: Array<{
-    codigo: string;
-    nombre: string;
-    descripcion: string;
-    precio: number;
-    __typename: "Product";
-  }>;
-} = {
-  listProductsBySupplier: [
+// 1) Mocked data shaped to GetProductsBySupplierIdQuery:
+const initialProductsData: GetProductsBySupplierIdQuery = {
+  listarProductosPorProveedor: [
     {
+      __typename: "Producto",
       codigo: "A1",
-      nombre: "Product A",
-      descripcion: "Description A",
+      descripcion: "Desc A",
+      idProducto: "p1",
       precio: 10,
-      __typename: "Product",
+      nombre: "Prod A",
     },
   ],
 };
 
-// 2) GraphQL mocks array
 const mocks = [
+  // Query mock
   {
     request: {
       query: GetProductsBySupplierIdDocument,
-      variables: { supplierId },
+      variables: { idProveedor: supplierId } as GetProductsBySupplierIdQueryVariables,
     },
     result: { data: initialProductsData },
   },
+  // Mutation mock
   {
     request: {
       query: AddProductDocument,
       variables: {
-        supplierId,
+        idProveedor: supplierId,
         codigo: "B2",
-        nombre: "Product B",
+        nombre: "Prod B",
         precio: 20,
-        descripcion: "Description B",
-      },
+        descripcion: "Desc B",
+      } as AddProductMutationVariables,
     },
     result: {
       data: {
-        addProduct: {
+        agregarProducto: {
+          __typename: "Producto",
           codigo: "B2",
-          __typename: "Product",
         },
       },
-    },
+    } as AddProductMutation,
   },
 ];
 
 describe("ProductsCatalog Component", () => {
-  it("shows a spinner, then renders initial products and allows adding a new one", async () => {
+  it("renders initial products and allows adding a new one", async () => {
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <ProductsCatalog supplierId={supplierId} />
       </MockedProvider>
     );
 
-    // 1) Spinner should be visible while loading
-    expect(screen.getByRole("status")).toBeInTheDocument();
+    // 1) Before query resolves, placeholder appears
+    expect(screen.getByText("No hay productos asociados")).toBeInTheDocument();
 
-    // 2) After query resolves, Product A appears
+    // 2) After query, initial product is shown
     await waitFor(() => {
-      expect(screen.getByText("Product A")).toBeInTheDocument();
+      expect(screen.getByText("Prod A")).toBeInTheDocument();
     });
 
-    // 3) Open "Add" dialog and fill in a new product
-    userEvent.click(screen.getByRole("button", { name: "Add" }));
-    userEvent.type(screen.getByLabelText(/Code/i), "B2");
-    userEvent.type(screen.getByLabelText(/Name/i), "Product B");
-    userEvent.type(screen.getByLabelText(/Price/i), "20");
-    userEvent.click(screen.getByRole("button", { name: "Save" }));
+    // 3) Open "Agregar" dialog
+    userEvent.click(screen.getByRole("button", { name: "Agregar" }));
 
-    // 4) After mutation + refetch, Product B appears
+    // 4) Fill out the form fields
+    userEvent.type(screen.getByLabelText(/Código/i), "B2");
+    userEvent.type(screen.getByLabelText(/Nombre/i), "Prod B");
+    userEvent.type(screen.getByLabelText(/Precio/i), "20");
+
+    // 5) Submit
+    userEvent.click(screen.getByRole("button", { name: "Guardar" }));
+
+    // 6) After mutation + refetch, new product appears
     await waitFor(() => {
-      expect(screen.getByText("Product B")).toBeInTheDocument();
+      expect(screen.getByText("Prod B")).toBeInTheDocument();
     });
   });
 
-  it("displays an error toast if the add-product mutation fails", async () => {
+  it("shows an error toast if the add-product mutation fails", async () => {
     const errorMocks = [
       mocks[0],
       {
@@ -112,19 +112,21 @@ describe("ProductsCatalog Component", () => {
     );
 
     // Wait for initial data
-    await waitFor(() => screen.getByText("Product A"));
+    await waitFor(() => {
+      expect(screen.getByText("Prod A")).toBeInTheDocument();
+    });
 
-    // Try to add B2
-    userEvent.click(screen.getByRole("button", { name: "Add" }));
-    userEvent.type(screen.getByLabelText(/Code/i), "B2");
-    userEvent.type(screen.getByLabelText(/Name/i), "Product B");
-    userEvent.type(screen.getByLabelText(/Price/i), "20");
-    userEvent.click(screen.getByRole("button", { name: "Save" }));
+    // Attempt to add again
+    userEvent.click(screen.getByRole("button", { name: "Agregar" }));
+    userEvent.type(screen.getByLabelText(/Código/i), "B2");
+    userEvent.type(screen.getByLabelText(/Nombre/i), "Prod B");
+    userEvent.type(screen.getByLabelText(/Precio/i), "20");
+    userEvent.click(screen.getByRole("button", { name: "Guardar" }));
 
-    // Should show your error toast
+    // Should display your onError toast message
     await waitFor(() => {
       expect(
-        screen.getByText(/Error saving the product/i)
+        screen.getByText(/Error al guardar el producto/i)
       ).toBeInTheDocument();
     });
   });

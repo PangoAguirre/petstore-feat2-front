@@ -30,4 +30,15 @@ module.exports = {
     "!src/**/*.test.{ts,tsx}",
     "!src/**/__mocks__/**"
   ],
+  reporters: [
+    "default",
+    [ "jest-junit", {
+        outputDirectory: "coverage",
+        outputName: "junit.xml",
+        suiteName: "jest tests",
+        classNameTemplate: "{classname}-{title}",
+        titleTemplate: "{classname}:{title}"
+      }
+    ]
+  ],
 };

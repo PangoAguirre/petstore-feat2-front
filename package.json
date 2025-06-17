@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --coverage --coverageReporters=text-lcov --collectCoverageFrom='src/**/*.{ts,tsx}' --outputDirectory=coverage",
+    "test": "jest --coverage --collectCoverageFrom='src/**/*.{ts,tsx}'",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
@@ -93,6 +93,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.0.0",
     "jest-environment-jsdom": "^30.0.0",
+    "jest-junit": "^16.0.0",
     "jest-sonar-reporter": "^2.0.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.0",

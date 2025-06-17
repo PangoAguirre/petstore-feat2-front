@@ -22,15 +22,13 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with: { node-version: '18' }
       - run: npm ci
-      - run: mkdir -p coverage
-      - run: npm run test
-      - name: Verificar reporte
-        run: ls -la coverage
-      - uses: SonarSource/sonarcloud-github-action@master
+      - run: npm run test         # genera coverage/lcov.info y coverage/junit.xml
+      - name: Mostrar cobertura
+        run: ls coverage
+      - uses: SonarSource/sonarqube-scan-action@v5.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -38,4 +36,4 @@ jobs:
           args: >
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.testExecutionReportPaths=coverage/test-report.xml
+            -Dsonar.testExecutionReportPaths=coverage/junit.xml

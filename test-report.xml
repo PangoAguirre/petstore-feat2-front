@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="/home/estudiantes/bcamilo.aguirre/calidad/petstore-feat2-front/src/app/suppliers/new/NewSupplier.test.tsx">
+    <testCase name="NewSupplier Component renderiza correctamente" duration="21"/>
+    <testCase name="NewSupplier Component navega al siguiente paso" duration="26"/>
+  </file>
+</testExecutions>

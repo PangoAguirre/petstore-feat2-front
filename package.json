@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --coverage",
+    "test": "jest --coverage --coverageReporters=text-lcov --collectCoverageFrom='src/**/*.{ts,tsx}' > coverage/lcov.info",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "dependencies": {
@@ -93,6 +93,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.0.0",
     "jest-environment-jsdom": "^30.0.0",
+    "jest-sonar-reporter": "^2.0.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.0",
     "tw-animate-css": "^1.3.0",

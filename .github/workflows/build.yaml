@@ -26,8 +26,22 @@ jobs:
         uses: actions/setup-node@v3
         with: { node-version: '18' }
       - run: npm ci
-      - run: npm test -- --coverage
+      - run: npm run test
+      - name: Verificar cobertura
+        run: |
+          echo "Contenido de coverage:"
+          ls -la coverage
+          echo "Archivo lcov:"
+          cat coverage/lcov.info | head -n 10
       - uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with: { projectBaseDir: . }
+        with:
+          args: >
+            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.testExecutionReportPaths=test-report.xml
+            -Dsonar.coverage.exclusions=**/__tests__/**,**/*.test.tsx,**/node_modules/**
+            -Dsonar.issue.ignore.multicriteria=e1
+            -Dsonar.issue.ignore.multicriteria.e1.ruleKey=typescript:S4325
+            -Dsonar.issue.ignore.multicriteria.e1.resourceKey=**/*

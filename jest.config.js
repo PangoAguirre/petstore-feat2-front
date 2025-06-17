@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = {More actions
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
@@ -23,19 +23,9 @@ module.exports = {
   ],
   collectCoverage: true,
   coverageDirectory: 'coverage',
-  coverageReporters: ['lcov', 'text-summary', 'text-lcov'],
-  testResultsProcessor: "jest-sonar-reporter",
-  sonarRunnerReporterOptions: {
-    reportPath: "coverage/test-report.xml",
-  reporters: [
-    "default",
-    [ "jest-junit", {
-        outputDirectory: "coverage",
-        outputName: "junit.xml",
-        suiteName: "jest tests",
-        classNameTemplate: "{classname}-{title}",
-        titleTemplate: "{classname}:{title}"
-      }
-    ]
-  ]  },
+  coverageReporters: ['lcov', 'text-summary'],
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx,js,jsx}',
+    '!src/**/*.test.{ts,tsx,js,jsx}',
+  ],
 };

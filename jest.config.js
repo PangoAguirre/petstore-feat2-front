@@ -4,6 +4,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   collectCoverage: true,
+  coverageReporters: ['lcov', 'text'],
   coverageDirectory: 'coverage',
   testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
 };

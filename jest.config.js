@@ -1,10 +1,24 @@
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'jest-environment-jsdom',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  collectCoverage: true,
-  coverageReporters: ['lcov', 'text'],
-  coverageDirectory: 'coverage',
-  testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': [
+      'babel-jest',
+      {
+        presets: [
+          ['@babel/preset-env', { targets: { node: 'current' } }],
+          ['@babel/preset-react', { runtime: 'automatic' }],
+          '@babel/preset-typescript',
+        ],
+      },
+    ],
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!react-dnd|dnd-core|@react-dnd|@hookform)'
+  ],
 };

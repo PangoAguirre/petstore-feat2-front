@@ -213,7 +213,11 @@ export default function NewSupplier() {
               Volver a Revisar
             </Button>
             <Button onClick={handleSubmit}>
-              {loading ? <Loader2Icon className="animate-spin" /> : "Finalizar"}
+              {loading ? (
+                <Loader2Icon className="animate-spin" data-testid="loader-icon" />
+              ) : (
+                "Finalizar"
+              )}
             </Button>
           </Info>
           <div className={innerDivCn}>

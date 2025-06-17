@@ -50,6 +50,7 @@ function PaginationLink({
 }: PaginationLinkProps) {
   return (
     <a
+      href="/pagination"
       aria-current={isActive ? "page" : undefined}
       data-slot="pagination-link"
       data-active={isActive}

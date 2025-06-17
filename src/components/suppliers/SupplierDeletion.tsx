@@ -42,8 +42,7 @@ export function SupplierDeletion(props: { id: string; name: string }) {
           <DialogTitle>¿Eliminar Proveedor?</DialogTitle>
         </DialogHeader>
         <DialogDescription>
-          Esto eliminará al proveedor
-          <strong>{`"${props.name}"`}</strong> y todos sus datos asociados.
+          Esto eliminará al proveedor <strong>{`"${props.name}"`}</strong> y todos sus datos asociados.
         </DialogDescription>
         <DialogFooter>
           <DialogClose asChild>

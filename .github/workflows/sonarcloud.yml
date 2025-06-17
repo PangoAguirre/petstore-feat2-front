@@ -41,3 +41,6 @@ jobs:
           projectKey: PangoAguirre_petstore-feat2-front
           organization: pangoaguirre
           token: ${{ secrets.SONAR_TOKEN }}
+          args: >
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.projectKey=PangoAguirre_petstore-feat2-front

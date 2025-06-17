@@ -59,8 +59,8 @@ export function InputField({
         {state.error && (
           <motion.div
             key="error"
-            initial={{ translateY: "-100%", opacity: 0 }}
-            animate={{ translateY: "0%", opacity: 1 }}
+            initial={{ y: "-100%", opacity: 0 }}
+            animate={{ y: "0%",   opacity: 1 }}
             transition={{
               type: "spring",
               bounce: 1.4,

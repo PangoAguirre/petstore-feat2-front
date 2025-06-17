@@ -30,9 +30,9 @@ jest.mock('@/lib/forms/suppliers', () => ({
 const mockPush = jest.fn();
 const mockCreateSupplier = jest.fn();
 
-(useRouter as jest.Mock).mockReturnValue({ push: mockPush });
-(useSession as jest.Mock).mockReturnValue({ data: { user: { id: 'user-id' } } });
-(useNewSupplierMutation as jest.Mock).mockReturnValue([
+useRouter.mockReturnValue({ push: mockPush });
+useSession.mockReturnValue({ data: { user: { id: 'user-id' } } });
+useNewSupplierMutation.mockReturnValue([
   mockCreateSupplier,
   { loading: false },
 ]);
@@ -91,7 +91,7 @@ describe('NewSupplier Component', () => {
 
   test('handles GraphQL error and shows toast', async () => {
     const errorHandler = jest.fn();
-    (useNewSupplierMutation as jest.Mock).mockReturnValue([
+    useNewSupplierMutation.mockReturnValue([
       mockCreateSupplier,
       { loading: false },
     ]);

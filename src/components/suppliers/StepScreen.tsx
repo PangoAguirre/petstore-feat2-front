@@ -8,8 +8,8 @@ export function StepScreen({
 }: React.PropsWithChildren & { show: boolean }) {
   return show ? (
     <motion.div
-      initial={{ opacity: 0, translateX: "10%" }}
-      animate={{ opacity: 1, translateX: 0 }}
+      initial={{ opacity: 0, x: "10%" }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ type: "spring", duration: 0.8, bounce: 0.4 }}
       className={cn("flex flex-col grow items-center gap-12")}
       {...props}

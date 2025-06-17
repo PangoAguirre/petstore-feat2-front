@@ -21,4 +21,7 @@ module.exports = {
   transformIgnorePatterns: [
     '/node_modules/(?!react-dnd|dnd-core|@react-dnd|@hookform)'
   ],
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  coverageReporters: ['lcov', 'text-summary']
 };

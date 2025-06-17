@@ -20,7 +20,7 @@ export default withAuth(
       authorized: ({ token, req }) => {
         if (isAuthRelated(req.nextUrl.pathname)) return true;
         if (!token) {
-          if (false && process.env.NODE_ENV === "development") {
+          if (process.env.NODE_ENV === "development") {
             console.debug(
               `Allowing access to ${req.nextUrl.pathname} due to development mode.`,
             );

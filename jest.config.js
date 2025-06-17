@@ -25,11 +25,8 @@ module.exports = {
   coverageDirectory: 'coverage',
   coverageReporters: ['lcov', 'text-summary', 'text-lcov'],
   testResultsProcessor: "jest-sonar-reporter",
-  collectCoverageFrom: [
-    "src/**/*.{ts,tsx}",
-    "!src/**/*.test.{ts,tsx}",
-    "!src/**/__mocks__/**"
-  ],
+  sonarRunnerReporterOptions: {
+    reportPath: "coverage/test-report.xml",
   reporters: [
     "default",
     [ "jest-junit", {
@@ -40,5 +37,5 @@ module.exports = {
         titleTemplate: "{classname}:{title}"
       }
     ]
-  ],
+  ]  },
 };

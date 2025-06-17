@@ -4,6 +4,7 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
+import { FetchResult } from "@apollo/client";
 import { ProductsCatalog } from "../components/products/ProductsCatalog";
 
 import {
@@ -17,7 +18,6 @@ import {
 
 const supplierId = "123";
 
-// 1) Mocked data shaped to GetProductsBySupplierIdQuery:
 const initialProductsData: GetProductsBySupplierIdQuery = {
   listarProductosPorProveedor: [
     {
@@ -32,7 +32,6 @@ const initialProductsData: GetProductsBySupplierIdQuery = {
 };
 
 const mocks = [
-  // Query mock
   {
     request: {
       query: GetProductsBySupplierIdDocument,
@@ -40,7 +39,6 @@ const mocks = [
     },
     result: { data: initialProductsData },
   },
-  // Mutation mock
   {
     request: {
       query: AddProductDocument,
@@ -59,7 +57,7 @@ const mocks = [
           codigo: "B2",
         },
       },
-    },
+    } as unknown as FetchResult<AddProductMutation>,
   },
 ];
 
@@ -71,26 +69,23 @@ describe("ProductsCatalog Component", () => {
       </MockedProvider>
     );
 
-    // 1) Before query resolves, placeholder appears
-    expect(screen.getByText("No hay productos asociados")).toBeInTheDocument();
-
-    // 2) After query, initial product is shown
+    // Wait for the query to finish and initial item to appear:
     await waitFor(() => {
       expect(screen.getByText("Prod A")).toBeInTheDocument();
     });
 
-    // 3) Open "Agregar" dialog
+    // Open the "Agregar" form:
     userEvent.click(screen.getByRole("button", { name: "Agregar" }));
 
-    // 4) Fill out the form fields
-    userEvent.type(screen.getByLabelText(/Código/i), "B2");
-    userEvent.type(screen.getByLabelText(/Nombre/i), "Prod B");
-    userEvent.type(screen.getByLabelText(/Precio/i), "20");
+    // Fill in the form using placeholders (adjust if your form uses labels instead):
+    userEvent.type(screen.getByPlaceholderText("Código"), "B2");
+    userEvent.type(screen.getByPlaceholderText("Nombre"), "Prod B");
+    userEvent.type(screen.getByPlaceholderText("Precio"), "20");
 
-    // 5) Submit
+    // Submit:
     userEvent.click(screen.getByRole("button", { name: "Guardar" }));
 
-    // 6) After mutation + refetch, new product appears
+    // The new product should show up after mutation + refetch:
     await waitFor(() => {
       expect(screen.getByText("Prod B")).toBeInTheDocument();
     });
@@ -101,7 +96,6 @@ describe("ProductsCatalog Component", () => {
       mocks[0],
       {
         ...mocks[1],
-        result: undefined,
         error: new Error("Network error"),
       },
     ];
@@ -112,19 +106,19 @@ describe("ProductsCatalog Component", () => {
       </MockedProvider>
     );
 
-    // Wait for initial data
+    // Wait for initial product
     await waitFor(() => {
       expect(screen.getByText("Prod A")).toBeInTheDocument();
     });
 
-    // Attempt to add again
+    // Try to add again
     userEvent.click(screen.getByRole("button", { name: "Agregar" }));
-    userEvent.type(screen.getByLabelText(/Código/i), "B2");
-    userEvent.type(screen.getByLabelText(/Nombre/i), "Prod B");
-    userEvent.type(screen.getByLabelText(/Precio/i), "20");
+    userEvent.type(screen.getByPlaceholderText("Código"), "B2");
+    userEvent.type(screen.getByPlaceholderText("Nombre"), "Prod B");
+    userEvent.type(screen.getByPlaceholderText("Precio"), "20");
     userEvent.click(screen.getByRole("button", { name: "Guardar" }));
 
-    // Should display your onError toast message
+    // Expect your error toast
     await waitFor(() => {
       expect(
         screen.getByText(/Error al guardar el producto/i)

@@ -29,8 +29,17 @@ export function ProductsCatalog({ supplierId }: ProductsCatalogProps) {
   });
   const [saveProduct, { loading: saving }] = useAddProductMutation({
     context: { serviceName: "suppliers" },
-    onCompleted: () => refetch(),
-  });
+    onCompleted: () => {
+      refetch().catch(err => {
+        console.error("Error al refetchear productos:", err);
+      });
+    },
+    onError: (err: ApolloError) => {
+      toast.error("Error al guardar el producto", {
+        description: err.message,
+      });
+    },    
+  });  
   const [addingProduct, setAddingProduct] = useState(false);
   const productsForm = useForm({
     defaultValues: {

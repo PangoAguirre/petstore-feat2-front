@@ -1,5 +1,5 @@
 // src/app/suppliers/new/NewSupplier.test.tsx
-import * as React from 'react'; // Cambia esta línea
+import * as React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useRouter } from 'next/navigation';
@@ -35,9 +35,42 @@ jest.mock('@/lib/graphql/codegen', () => ({
   ],
 }));
 
-// Mock para componentes dinámicos de Next.js
+// Mock para react-hook-form
+jest.mock('react-hook-form', () => ({
+  ...jest.requireActual('react-hook-form'),
+  useForm: () => ({
+    control: {},
+    handleSubmit: (fn: any) => fn,
+    formState: { errors: {}, isValid: true },
+    getValues: () => ({
+      name: 'Proveedor de prueba',
+      nit: '1234567890',
+      products: [],
+    }),
+    setValue: jest.fn(),
+    watch: jest.fn(),
+  }),
+  useFieldArray: () => ({
+    fields: [],
+    append: jest.fn(),
+    remove: jest.fn(),
+    update: jest.fn(),
+  }),
+}));
+
+// Mock para componentes
 jest.mock('@/components/suppliers/StepScreen', () => ({
   StepScreen: ({ children, show }: any) => show ? children : null
+}));
+
+jest.mock('@/components/common/PartialForm', () => ({
+  PartialForm: ({ onAction }: any) => (
+    <button onClick={onAction}>Siguiente</button>
+  )
+}));
+
+jest.mock('@/components/common/Info', () => ({
+  Info: ({ title }: any) => <h2>{title}</h2>
 }));
 
 describe('NewSupplier Component', () => {
@@ -50,7 +83,7 @@ describe('NewSupplier Component', () => {
     render(<NewSupplier />);
     
     await act(async () => {
-      fireEvent.click(screen.getByRole('button', { name: /siguiente/i }));
+      fireEvent.click(screen.getByText('Siguiente'));
     });
     
     expect(screen.getByText('Paso 2 – Productos Asociados')).toBeInTheDocument();

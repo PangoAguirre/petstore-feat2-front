@@ -59,7 +59,7 @@ const mocks = [
           codigo: "B2",
         },
       },
-    } as AddProductMutation,
+    },
   },
 ];
 
@@ -101,6 +101,7 @@ describe("ProductsCatalog Component", () => {
       mocks[0],
       {
         ...mocks[1],
+        result: undefined,
         error: new Error("Network error"),
       },
     ];

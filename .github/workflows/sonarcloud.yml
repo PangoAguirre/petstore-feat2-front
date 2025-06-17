@@ -44,3 +44,4 @@ jobs:
           args: >
             -Dsonar.token=3e18148005a0555ca87f0df633d98b1f1a05a96b
             -Dsonar.projectKey=PangoAguirre_petstore-feat2-front
+            -Dproject.settings=sonar-project.properties
